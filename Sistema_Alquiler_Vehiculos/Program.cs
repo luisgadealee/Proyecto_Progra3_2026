@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace Sistema_Alquiler_Vehiculos
 {
-    internal static class Program
+    public static class Program
     {
         /// <summary>
         /// The main entry point for the application.
@@ -17,6 +17,9 @@ namespace Sistema_Alquiler_Vehiculos
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new FrmMain());
+
+
+            // Sincronización completa de mi parte: Atte Jorge Arroyo :)
         }
     }
 }
