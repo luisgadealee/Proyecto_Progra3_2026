@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace Sistema_Alquiler_Vehiculos
 {
-    public partial class Form1 : Form
+    public partial class FrmMain : Form
     {
-        public Form1()
+        public FrmMain()
         {
             InitializeComponent();
         }
