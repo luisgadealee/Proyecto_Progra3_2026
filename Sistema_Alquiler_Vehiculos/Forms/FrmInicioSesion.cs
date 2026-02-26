@@ -46,5 +46,10 @@ namespace Sistema_Alquiler_Vehiculos.Forms
         {
 
         }
+
+        private void FrmInicioSesion_Load(object sender, EventArgs e)
+        {
+            txtContrasenia.PasswordChar = '*';
+        }
     }
 }

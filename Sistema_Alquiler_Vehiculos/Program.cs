@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sistema_Alquiler_Vehiculos.Forms;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace Sistema_Alquiler_Vehiculos
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmMain());
+            Application.Run(new FrmInicioSesion());
 
 
             // Sincronización completa de mi parte: Atte Jorge Arroyo :)
