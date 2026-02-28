@@ -112,6 +112,7 @@
             this.btnConectar.TabIndex = 6;
             this.btnConectar.Text = "Conectar";
             this.btnConectar.UseVisualStyleBackColor = true;
+            this.btnConectar.Click += new System.EventHandler(this.btnConectar_Click);
             // 
             // btnCrearUsuario
             // 

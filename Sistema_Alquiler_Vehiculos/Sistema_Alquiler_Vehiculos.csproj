@@ -60,6 +60,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLL\UsuarioFacade.cs" />
     <Compile Include="DAL\Alquileres.cs">
       <DependentUpon>AlquilerVehiculosModel.tt</DependentUpon>
     </Compile>
@@ -156,9 +157,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="BLL\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="Resources\ImgAutos.png" />
   </ItemGroup>
