@@ -47,6 +47,8 @@
     </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -58,6 +60,51 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DAL\Alquileres.cs">
+      <DependentUpon>AlquilerVehiculosModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\AlquilerVehiculosModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AlquilerVehiculosModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\AlquilerVehiculosModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AlquilerVehiculosModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\AlquilerVehiculosModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AlquilerVehiculosModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\EstadosAlquiler.cs">
+      <DependentUpon>AlquilerVehiculosModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\EstadosVehiculo.cs">
+      <DependentUpon>AlquilerVehiculosModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\Pagos.cs">
+      <DependentUpon>AlquilerVehiculosModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\Roles.cs">
+      <DependentUpon>AlquilerVehiculosModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\Tarifas.cs">
+      <DependentUpon>AlquilerVehiculosModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\TiposTarifa.cs">
+      <DependentUpon>AlquilerVehiculosModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\TiposVehiculo.cs">
+      <DependentUpon>AlquilerVehiculosModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\Usuarios.cs">
+      <DependentUpon>AlquilerVehiculosModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\Vehiculos.cs">
+      <DependentUpon>AlquilerVehiculosModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FrmInicioSesion.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -88,6 +135,13 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EntityDeploy Include="DAL\AlquilerVehiculosModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>AlquilerVehiculosModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="DAL\AlquilerVehiculosModel.edmx.diagram">
+      <DependentUpon>AlquilerVehiculosModel.edmx</DependentUpon>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -104,10 +158,24 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="BLL\" />
-    <Folder Include="DAL\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\ImgAutos.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DAL\AlquilerVehiculosModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>AlquilerVehiculosModel.edmx</DependentUpon>
+      <LastGenOutput>AlquilerVehiculosModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="DAL\AlquilerVehiculosModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>AlquilerVehiculosModel.edmx</DependentUpon>
+      <LastGenOutput>AlquilerVehiculosModel.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="1655b35e01ee4a5a8afd8068683098b1" Name="Diagram1">
+        <EntityTypeShape EntityType="AlquilerVehiculosModel.Alquileres" Width="1.5" PointX="5.25" PointY="3.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="AlquilerVehiculosModel.EstadosAlquiler" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="AlquilerVehiculosModel.EstadosVehiculo" Width="1.5" PointX="0.75" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="AlquilerVehiculosModel.Pagos" Width="1.5" PointX="7.5" PointY="8.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="AlquilerVehiculosModel.Roles" Width="1.5" PointX="0.75" PointY="8.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="AlquilerVehiculosModel.Tarifas" Width="1.5" PointX="8.25" PointY="4.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="AlquilerVehiculosModel.TiposTarifa" Width="1.5" PointX="6" PointY="0.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="AlquilerVehiculosModel.TiposVehiculo" Width="1.5" PointX="0.75" PointY="1.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="AlquilerVehiculosModel.Usuarios" Width="1.5" PointX="3" PointY="8.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="AlquilerVehiculosModel.Vehiculos" Width="1.5" PointX="3" PointY="4" IsExpanded="true" />
+        <AssociationConnector Association="AlquilerVehiculosModel.FK_Alquileres_Estados" ManuallyRouted="false" />
+        <AssociationConnector Association="AlquilerVehiculosModel.FK_Alquileres_Tarifas" ManuallyRouted="false" />
+        <AssociationConnector Association="AlquilerVehiculosModel.FK_Alquileres_Usuarios" ManuallyRouted="false" />
+        <AssociationConnector Association="AlquilerVehiculosModel.FK_Alquileres_Vehiculos" ManuallyRouted="false" />
+        <AssociationConnector Association="AlquilerVehiculosModel.FK_Pagos_Alquileres" ManuallyRouted="false" />
+        <AssociationConnector Association="AlquilerVehiculosModel.FK_Vehiculos_Estado" ManuallyRouted="false" />
+        <AssociationConnector Association="AlquilerVehiculosModel.FK_Usuarios_Roles" ManuallyRouted="false" />
+        <AssociationConnector Association="AlquilerVehiculosModel.FK_Tarifas_TiposTarifa" ManuallyRouted="false" />
+        <AssociationConnector Association="AlquilerVehiculosModel.FK_Tarifas_Vehiculos" ManuallyRouted="false" />
+        <AssociationConnector Association="AlquilerVehiculosModel.FK_Vehiculos_Tipo" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

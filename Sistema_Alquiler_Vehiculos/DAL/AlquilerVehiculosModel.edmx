@@ -1,0 +1,707 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="AlquilerVehiculosModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Alquileres">
+          <Key>
+            <PropertyRef Name="AlquilerId" />
+          </Key>
+          <Property Name="AlquilerId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UsuarioId" Type="int" Nullable="false" />
+          <Property Name="VehiculoId" Type="int" Nullable="false" />
+          <Property Name="TarifaId" Type="int" Nullable="false" />
+          <Property Name="EstadoId" Type="int" Nullable="false" />
+          <Property Name="FechaInicio" Type="datetime" Nullable="false" />
+          <Property Name="FechaFinPactada" Type="datetime" Nullable="false" />
+          <Property Name="FechaDevolucion" Type="datetime" />
+          <Property Name="TieneDanios" Type="bit" Nullable="false" />
+          <Property Name="CostoDanios" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="MultaRetraso" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EstadosAlquiler">
+          <Key>
+            <PropertyRef Name="EstadoId" />
+          </Key>
+          <Property Name="EstadoId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NombreEstado" Type="varchar" MaxLength="30" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EstadosVehiculo">
+          <Key>
+            <PropertyRef Name="EstadoId" />
+          </Key>
+          <Property Name="EstadoId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NombreEstado" Type="varchar" MaxLength="30" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Pagos">
+          <Key>
+            <PropertyRef Name="PagoId" />
+          </Key>
+          <Property Name="PagoId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AlquilerId" Type="int" Nullable="false" />
+          <Property Name="Monto" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="FechaPago" Type="datetime" Nullable="false" />
+          <Property Name="EstadoPago" Type="varchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Roles">
+          <Key>
+            <PropertyRef Name="RolId" />
+          </Key>
+          <Property Name="RolId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NombreRol" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tarifas">
+          <Key>
+            <PropertyRef Name="TarifaId" />
+          </Key>
+          <Property Name="TarifaId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="VehiculoId" Type="int" Nullable="false" />
+          <Property Name="TipoTarifaId" Type="int" Nullable="false" />
+          <Property Name="Monto" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TiposTarifa">
+          <Key>
+            <PropertyRef Name="TipoTarifaId" />
+          </Key>
+          <Property Name="TipoTarifaId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NombreTarifa" Type="varchar" MaxLength="30" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TiposVehiculo">
+          <Key>
+            <PropertyRef Name="TipoId" />
+          </Key>
+          <Property Name="TipoId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NombreTipo" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Usuarios">
+          <Key>
+            <PropertyRef Name="UsuarioId" />
+          </Key>
+          <Property Name="UsuarioId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Apellido" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="150" Nullable="false" />
+          <Property Name="NombreUsuario" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Contrasenia" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="RolId" Type="int" Nullable="false" />
+          <Property Name="FechaRegistro" Type="datetime" Nullable="false" />
+          <Property Name="Activo" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Vehiculos">
+          <Key>
+            <PropertyRef Name="VehiculoId" />
+          </Key>
+          <Property Name="VehiculoId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Placa" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Marca" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Modelo" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Anio" Type="int" Nullable="false" />
+          <Property Name="TipoId" Type="int" Nullable="false" />
+          <Property Name="EstadoId" Type="int" Nullable="false" />
+          <Property Name="Activo" Type="bit" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Alquileres_Estados">
+          <End Role="EstadosAlquiler" Type="Self.EstadosAlquiler" Multiplicity="1" />
+          <End Role="Alquileres" Type="Self.Alquileres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EstadosAlquiler">
+              <PropertyRef Name="EstadoId" />
+            </Principal>
+            <Dependent Role="Alquileres">
+              <PropertyRef Name="EstadoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Alquileres_Tarifas">
+          <End Role="Tarifas" Type="Self.Tarifas" Multiplicity="1" />
+          <End Role="Alquileres" Type="Self.Alquileres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tarifas">
+              <PropertyRef Name="TarifaId" />
+            </Principal>
+            <Dependent Role="Alquileres">
+              <PropertyRef Name="TarifaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Alquileres_Usuarios">
+          <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="1" />
+          <End Role="Alquileres" Type="Self.Alquileres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuarios">
+              <PropertyRef Name="UsuarioId" />
+            </Principal>
+            <Dependent Role="Alquileres">
+              <PropertyRef Name="UsuarioId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Alquileres_Vehiculos">
+          <End Role="Vehiculos" Type="Self.Vehiculos" Multiplicity="1" />
+          <End Role="Alquileres" Type="Self.Alquileres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vehiculos">
+              <PropertyRef Name="VehiculoId" />
+            </Principal>
+            <Dependent Role="Alquileres">
+              <PropertyRef Name="VehiculoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Pagos_Alquileres">
+          <End Role="Alquileres" Type="Self.Alquileres" Multiplicity="1" />
+          <End Role="Pagos" Type="Self.Pagos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Alquileres">
+              <PropertyRef Name="AlquilerId" />
+            </Principal>
+            <Dependent Role="Pagos">
+              <PropertyRef Name="AlquilerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tarifas_TiposTarifa">
+          <End Role="TiposTarifa" Type="Self.TiposTarifa" Multiplicity="1" />
+          <End Role="Tarifas" Type="Self.Tarifas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TiposTarifa">
+              <PropertyRef Name="TipoTarifaId" />
+            </Principal>
+            <Dependent Role="Tarifas">
+              <PropertyRef Name="TipoTarifaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tarifas_Vehiculos">
+          <End Role="Vehiculos" Type="Self.Vehiculos" Multiplicity="1" />
+          <End Role="Tarifas" Type="Self.Tarifas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vehiculos">
+              <PropertyRef Name="VehiculoId" />
+            </Principal>
+            <Dependent Role="Tarifas">
+              <PropertyRef Name="VehiculoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Usuarios_Roles">
+          <End Role="Roles" Type="Self.Roles" Multiplicity="1" />
+          <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="RolId" />
+            </Principal>
+            <Dependent Role="Usuarios">
+              <PropertyRef Name="RolId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Vehiculos_Estado">
+          <End Role="EstadosVehiculo" Type="Self.EstadosVehiculo" Multiplicity="1" />
+          <End Role="Vehiculos" Type="Self.Vehiculos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EstadosVehiculo">
+              <PropertyRef Name="EstadoId" />
+            </Principal>
+            <Dependent Role="Vehiculos">
+              <PropertyRef Name="EstadoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Vehiculos_Tipo">
+          <End Role="TiposVehiculo" Type="Self.TiposVehiculo" Multiplicity="1" />
+          <End Role="Vehiculos" Type="Self.Vehiculos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TiposVehiculo">
+              <PropertyRef Name="TipoId" />
+            </Principal>
+            <Dependent Role="Vehiculos">
+              <PropertyRef Name="TipoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="AlquilerVehiculosModelStoreContainer">
+          <EntitySet Name="Alquileres" EntityType="Self.Alquileres" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EstadosAlquiler" EntityType="Self.EstadosAlquiler" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EstadosVehiculo" EntityType="Self.EstadosVehiculo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Pagos" EntityType="Self.Pagos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tarifas" EntityType="Self.Tarifas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TiposTarifa" EntityType="Self.TiposTarifa" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TiposVehiculo" EntityType="Self.TiposVehiculo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Usuarios" EntityType="Self.Usuarios" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Vehiculos" EntityType="Self.Vehiculos" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Alquileres_Estados" Association="Self.FK_Alquileres_Estados">
+            <End Role="EstadosAlquiler" EntitySet="EstadosAlquiler" />
+            <End Role="Alquileres" EntitySet="Alquileres" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Alquileres_Tarifas" Association="Self.FK_Alquileres_Tarifas">
+            <End Role="Tarifas" EntitySet="Tarifas" />
+            <End Role="Alquileres" EntitySet="Alquileres" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Alquileres_Usuarios" Association="Self.FK_Alquileres_Usuarios">
+            <End Role="Usuarios" EntitySet="Usuarios" />
+            <End Role="Alquileres" EntitySet="Alquileres" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Alquileres_Vehiculos" Association="Self.FK_Alquileres_Vehiculos">
+            <End Role="Vehiculos" EntitySet="Vehiculos" />
+            <End Role="Alquileres" EntitySet="Alquileres" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Pagos_Alquileres" Association="Self.FK_Pagos_Alquileres">
+            <End Role="Alquileres" EntitySet="Alquileres" />
+            <End Role="Pagos" EntitySet="Pagos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tarifas_TiposTarifa" Association="Self.FK_Tarifas_TiposTarifa">
+            <End Role="TiposTarifa" EntitySet="TiposTarifa" />
+            <End Role="Tarifas" EntitySet="Tarifas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tarifas_Vehiculos" Association="Self.FK_Tarifas_Vehiculos">
+            <End Role="Vehiculos" EntitySet="Vehiculos" />
+            <End Role="Tarifas" EntitySet="Tarifas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Usuarios_Roles" Association="Self.FK_Usuarios_Roles">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="Usuarios" EntitySet="Usuarios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Vehiculos_Estado" Association="Self.FK_Vehiculos_Estado">
+            <End Role="EstadosVehiculo" EntitySet="EstadosVehiculo" />
+            <End Role="Vehiculos" EntitySet="Vehiculos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Vehiculos_Tipo" Association="Self.FK_Vehiculos_Tipo">
+            <End Role="TiposVehiculo" EntitySet="TiposVehiculo" />
+            <End Role="Vehiculos" EntitySet="Vehiculos" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="AlquilerVehiculosModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Alquileres">
+          <Key>
+            <PropertyRef Name="AlquilerId" />
+          </Key>
+          <Property Name="AlquilerId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UsuarioId" Type="Int32" Nullable="false" />
+          <Property Name="VehiculoId" Type="Int32" Nullable="false" />
+          <Property Name="TarifaId" Type="Int32" Nullable="false" />
+          <Property Name="EstadoId" Type="Int32" Nullable="false" />
+          <Property Name="FechaInicio" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="FechaFinPactada" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="FechaDevolucion" Type="DateTime" Precision="3" />
+          <Property Name="TieneDanios" Type="Boolean" Nullable="false" />
+          <Property Name="CostoDanios" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="MultaRetraso" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <NavigationProperty Name="EstadosAlquiler" Relationship="Self.FK_Alquileres_Estados" FromRole="Alquileres" ToRole="EstadosAlquiler" />
+          <NavigationProperty Name="Tarifas" Relationship="Self.FK_Alquileres_Tarifas" FromRole="Alquileres" ToRole="Tarifas" />
+          <NavigationProperty Name="Usuarios" Relationship="Self.FK_Alquileres_Usuarios" FromRole="Alquileres" ToRole="Usuarios" />
+          <NavigationProperty Name="Vehiculos" Relationship="Self.FK_Alquileres_Vehiculos" FromRole="Alquileres" ToRole="Vehiculos" />
+          <NavigationProperty Name="Pagos" Relationship="Self.FK_Pagos_Alquileres" FromRole="Alquileres" ToRole="Pagos" />
+        </EntityType>
+        <EntityType Name="EstadosAlquiler">
+          <Key>
+            <PropertyRef Name="EstadoId" />
+          </Key>
+          <Property Name="EstadoId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NombreEstado" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Alquileres" Relationship="Self.FK_Alquileres_Estados" FromRole="EstadosAlquiler" ToRole="Alquileres" />
+        </EntityType>
+        <EntityType Name="EstadosVehiculo">
+          <Key>
+            <PropertyRef Name="EstadoId" />
+          </Key>
+          <Property Name="EstadoId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NombreEstado" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Vehiculos" Relationship="Self.FK_Vehiculos_Estado" FromRole="EstadosVehiculo" ToRole="Vehiculos" />
+        </EntityType>
+        <EntityType Name="Pagos">
+          <Key>
+            <PropertyRef Name="PagoId" />
+          </Key>
+          <Property Name="PagoId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AlquilerId" Type="Int32" Nullable="false" />
+          <Property Name="Monto" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="FechaPago" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EstadoPago" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Alquileres" Relationship="Self.FK_Pagos_Alquileres" FromRole="Pagos" ToRole="Alquileres" />
+        </EntityType>
+        <EntityType Name="Roles">
+          <Key>
+            <PropertyRef Name="RolId" />
+          </Key>
+          <Property Name="RolId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NombreRol" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Usuarios" Relationship="Self.FK_Usuarios_Roles" FromRole="Roles" ToRole="Usuarios" />
+        </EntityType>
+        <EntityType Name="Tarifas">
+          <Key>
+            <PropertyRef Name="TarifaId" />
+          </Key>
+          <Property Name="TarifaId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="VehiculoId" Type="Int32" Nullable="false" />
+          <Property Name="TipoTarifaId" Type="Int32" Nullable="false" />
+          <Property Name="Monto" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <NavigationProperty Name="Alquileres" Relationship="Self.FK_Alquileres_Tarifas" FromRole="Tarifas" ToRole="Alquileres" />
+          <NavigationProperty Name="TiposTarifa" Relationship="Self.FK_Tarifas_TiposTarifa" FromRole="Tarifas" ToRole="TiposTarifa" />
+          <NavigationProperty Name="Vehiculos" Relationship="Self.FK_Tarifas_Vehiculos" FromRole="Tarifas" ToRole="Vehiculos" />
+        </EntityType>
+        <EntityType Name="TiposTarifa">
+          <Key>
+            <PropertyRef Name="TipoTarifaId" />
+          </Key>
+          <Property Name="TipoTarifaId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NombreTarifa" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Tarifas" Relationship="Self.FK_Tarifas_TiposTarifa" FromRole="TiposTarifa" ToRole="Tarifas" />
+        </EntityType>
+        <EntityType Name="TiposVehiculo">
+          <Key>
+            <PropertyRef Name="TipoId" />
+          </Key>
+          <Property Name="TipoId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NombreTipo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Vehiculos" Relationship="Self.FK_Vehiculos_Tipo" FromRole="TiposVehiculo" ToRole="Vehiculos" />
+        </EntityType>
+        <EntityType Name="Usuarios">
+          <Key>
+            <PropertyRef Name="UsuarioId" />
+          </Key>
+          <Property Name="UsuarioId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Apellido" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="150" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="NombreUsuario" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Contrasenia" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="RolId" Type="Int32" Nullable="false" />
+          <Property Name="FechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Activo" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Alquileres" Relationship="Self.FK_Alquileres_Usuarios" FromRole="Usuarios" ToRole="Alquileres" />
+          <NavigationProperty Name="Roles" Relationship="Self.FK_Usuarios_Roles" FromRole="Usuarios" ToRole="Roles" />
+        </EntityType>
+        <EntityType Name="Vehiculos">
+          <Key>
+            <PropertyRef Name="VehiculoId" />
+          </Key>
+          <Property Name="VehiculoId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Placa" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Marca" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Modelo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Anio" Type="Int32" Nullable="false" />
+          <Property Name="TipoId" Type="Int32" Nullable="false" />
+          <Property Name="EstadoId" Type="Int32" Nullable="false" />
+          <Property Name="Activo" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Alquileres" Relationship="Self.FK_Alquileres_Vehiculos" FromRole="Vehiculos" ToRole="Alquileres" />
+          <NavigationProperty Name="EstadosVehiculo" Relationship="Self.FK_Vehiculos_Estado" FromRole="Vehiculos" ToRole="EstadosVehiculo" />
+          <NavigationProperty Name="Tarifas" Relationship="Self.FK_Tarifas_Vehiculos" FromRole="Vehiculos" ToRole="Tarifas" />
+          <NavigationProperty Name="TiposVehiculo" Relationship="Self.FK_Vehiculos_Tipo" FromRole="Vehiculos" ToRole="TiposVehiculo" />
+        </EntityType>
+        <Association Name="FK_Alquileres_Estados">
+          <End Role="EstadosAlquiler" Type="Self.EstadosAlquiler" Multiplicity="1" />
+          <End Role="Alquileres" Type="Self.Alquileres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EstadosAlquiler">
+              <PropertyRef Name="EstadoId" />
+            </Principal>
+            <Dependent Role="Alquileres">
+              <PropertyRef Name="EstadoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Alquileres_Tarifas">
+          <End Role="Tarifas" Type="Self.Tarifas" Multiplicity="1" />
+          <End Role="Alquileres" Type="Self.Alquileres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tarifas">
+              <PropertyRef Name="TarifaId" />
+            </Principal>
+            <Dependent Role="Alquileres">
+              <PropertyRef Name="TarifaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Alquileres_Usuarios">
+          <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="1" />
+          <End Role="Alquileres" Type="Self.Alquileres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuarios">
+              <PropertyRef Name="UsuarioId" />
+            </Principal>
+            <Dependent Role="Alquileres">
+              <PropertyRef Name="UsuarioId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Alquileres_Vehiculos">
+          <End Role="Vehiculos" Type="Self.Vehiculos" Multiplicity="1" />
+          <End Role="Alquileres" Type="Self.Alquileres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vehiculos">
+              <PropertyRef Name="VehiculoId" />
+            </Principal>
+            <Dependent Role="Alquileres">
+              <PropertyRef Name="VehiculoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Pagos_Alquileres">
+          <End Role="Alquileres" Type="Self.Alquileres" Multiplicity="1" />
+          <End Role="Pagos" Type="Self.Pagos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Alquileres">
+              <PropertyRef Name="AlquilerId" />
+            </Principal>
+            <Dependent Role="Pagos">
+              <PropertyRef Name="AlquilerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Vehiculos_Estado">
+          <End Role="EstadosVehiculo" Type="Self.EstadosVehiculo" Multiplicity="1" />
+          <End Role="Vehiculos" Type="Self.Vehiculos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EstadosVehiculo">
+              <PropertyRef Name="EstadoId" />
+            </Principal>
+            <Dependent Role="Vehiculos">
+              <PropertyRef Name="EstadoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Usuarios_Roles">
+          <End Role="Roles" Type="Self.Roles" Multiplicity="1" />
+          <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="RolId" />
+            </Principal>
+            <Dependent Role="Usuarios">
+              <PropertyRef Name="RolId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tarifas_TiposTarifa">
+          <End Role="TiposTarifa" Type="Self.TiposTarifa" Multiplicity="1" />
+          <End Role="Tarifas" Type="Self.Tarifas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TiposTarifa">
+              <PropertyRef Name="TipoTarifaId" />
+            </Principal>
+            <Dependent Role="Tarifas">
+              <PropertyRef Name="TipoTarifaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tarifas_Vehiculos">
+          <End Role="Vehiculos" Type="Self.Vehiculos" Multiplicity="1" />
+          <End Role="Tarifas" Type="Self.Tarifas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vehiculos">
+              <PropertyRef Name="VehiculoId" />
+            </Principal>
+            <Dependent Role="Tarifas">
+              <PropertyRef Name="VehiculoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Vehiculos_Tipo">
+          <End Role="TiposVehiculo" Type="Self.TiposVehiculo" Multiplicity="1" />
+          <End Role="Vehiculos" Type="Self.Vehiculos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TiposVehiculo">
+              <PropertyRef Name="TipoId" />
+            </Principal>
+            <Dependent Role="Vehiculos">
+              <PropertyRef Name="TipoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="AlquilerVehiculosEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Alquileres" EntityType="Self.Alquileres" />
+          <EntitySet Name="EstadosAlquiler" EntityType="Self.EstadosAlquiler" />
+          <EntitySet Name="EstadosVehiculo" EntityType="Self.EstadosVehiculo" />
+          <EntitySet Name="Pagos" EntityType="Self.Pagos" />
+          <EntitySet Name="Roles" EntityType="Self.Roles" />
+          <EntitySet Name="Tarifas" EntityType="Self.Tarifas" />
+          <EntitySet Name="TiposTarifa" EntityType="Self.TiposTarifa" />
+          <EntitySet Name="TiposVehiculo" EntityType="Self.TiposVehiculo" />
+          <EntitySet Name="Usuarios" EntityType="Self.Usuarios" />
+          <EntitySet Name="Vehiculos" EntityType="Self.Vehiculos" />
+          <AssociationSet Name="FK_Alquileres_Estados" Association="Self.FK_Alquileres_Estados">
+            <End Role="EstadosAlquiler" EntitySet="EstadosAlquiler" />
+            <End Role="Alquileres" EntitySet="Alquileres" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Alquileres_Tarifas" Association="Self.FK_Alquileres_Tarifas">
+            <End Role="Tarifas" EntitySet="Tarifas" />
+            <End Role="Alquileres" EntitySet="Alquileres" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Alquileres_Usuarios" Association="Self.FK_Alquileres_Usuarios">
+            <End Role="Usuarios" EntitySet="Usuarios" />
+            <End Role="Alquileres" EntitySet="Alquileres" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Alquileres_Vehiculos" Association="Self.FK_Alquileres_Vehiculos">
+            <End Role="Vehiculos" EntitySet="Vehiculos" />
+            <End Role="Alquileres" EntitySet="Alquileres" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Pagos_Alquileres" Association="Self.FK_Pagos_Alquileres">
+            <End Role="Alquileres" EntitySet="Alquileres" />
+            <End Role="Pagos" EntitySet="Pagos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Vehiculos_Estado" Association="Self.FK_Vehiculos_Estado">
+            <End Role="EstadosVehiculo" EntitySet="EstadosVehiculo" />
+            <End Role="Vehiculos" EntitySet="Vehiculos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Usuarios_Roles" Association="Self.FK_Usuarios_Roles">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="Usuarios" EntitySet="Usuarios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tarifas_TiposTarifa" Association="Self.FK_Tarifas_TiposTarifa">
+            <End Role="TiposTarifa" EntitySet="TiposTarifa" />
+            <End Role="Tarifas" EntitySet="Tarifas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tarifas_Vehiculos" Association="Self.FK_Tarifas_Vehiculos">
+            <End Role="Vehiculos" EntitySet="Vehiculos" />
+            <End Role="Tarifas" EntitySet="Tarifas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Vehiculos_Tipo" Association="Self.FK_Vehiculos_Tipo">
+            <End Role="TiposVehiculo" EntitySet="TiposVehiculo" />
+            <End Role="Vehiculos" EntitySet="Vehiculos" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="AlquilerVehiculosModelStoreContainer" CdmEntityContainer="AlquilerVehiculosEntities">
+          <EntitySetMapping Name="Alquileres">
+            <EntityTypeMapping TypeName="AlquilerVehiculosModel.Alquileres">
+              <MappingFragment StoreEntitySet="Alquileres">
+                <ScalarProperty Name="AlquilerId" ColumnName="AlquilerId" />
+                <ScalarProperty Name="UsuarioId" ColumnName="UsuarioId" />
+                <ScalarProperty Name="VehiculoId" ColumnName="VehiculoId" />
+                <ScalarProperty Name="TarifaId" ColumnName="TarifaId" />
+                <ScalarProperty Name="EstadoId" ColumnName="EstadoId" />
+                <ScalarProperty Name="FechaInicio" ColumnName="FechaInicio" />
+                <ScalarProperty Name="FechaFinPactada" ColumnName="FechaFinPactada" />
+                <ScalarProperty Name="FechaDevolucion" ColumnName="FechaDevolucion" />
+                <ScalarProperty Name="TieneDanios" ColumnName="TieneDanios" />
+                <ScalarProperty Name="CostoDanios" ColumnName="CostoDanios" />
+                <ScalarProperty Name="MultaRetraso" ColumnName="MultaRetraso" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EstadosAlquiler">
+            <EntityTypeMapping TypeName="AlquilerVehiculosModel.EstadosAlquiler">
+              <MappingFragment StoreEntitySet="EstadosAlquiler">
+                <ScalarProperty Name="EstadoId" ColumnName="EstadoId" />
+                <ScalarProperty Name="NombreEstado" ColumnName="NombreEstado" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EstadosVehiculo">
+            <EntityTypeMapping TypeName="AlquilerVehiculosModel.EstadosVehiculo">
+              <MappingFragment StoreEntitySet="EstadosVehiculo">
+                <ScalarProperty Name="EstadoId" ColumnName="EstadoId" />
+                <ScalarProperty Name="NombreEstado" ColumnName="NombreEstado" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Pagos">
+            <EntityTypeMapping TypeName="AlquilerVehiculosModel.Pagos">
+              <MappingFragment StoreEntitySet="Pagos">
+                <ScalarProperty Name="PagoId" ColumnName="PagoId" />
+                <ScalarProperty Name="AlquilerId" ColumnName="AlquilerId" />
+                <ScalarProperty Name="Monto" ColumnName="Monto" />
+                <ScalarProperty Name="FechaPago" ColumnName="FechaPago" />
+                <ScalarProperty Name="EstadoPago" ColumnName="EstadoPago" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Roles">
+            <EntityTypeMapping TypeName="AlquilerVehiculosModel.Roles">
+              <MappingFragment StoreEntitySet="Roles">
+                <ScalarProperty Name="RolId" ColumnName="RolId" />
+                <ScalarProperty Name="NombreRol" ColumnName="NombreRol" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tarifas">
+            <EntityTypeMapping TypeName="AlquilerVehiculosModel.Tarifas">
+              <MappingFragment StoreEntitySet="Tarifas">
+                <ScalarProperty Name="TarifaId" ColumnName="TarifaId" />
+                <ScalarProperty Name="VehiculoId" ColumnName="VehiculoId" />
+                <ScalarProperty Name="TipoTarifaId" ColumnName="TipoTarifaId" />
+                <ScalarProperty Name="Monto" ColumnName="Monto" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TiposTarifa">
+            <EntityTypeMapping TypeName="AlquilerVehiculosModel.TiposTarifa">
+              <MappingFragment StoreEntitySet="TiposTarifa">
+                <ScalarProperty Name="TipoTarifaId" ColumnName="TipoTarifaId" />
+                <ScalarProperty Name="NombreTarifa" ColumnName="NombreTarifa" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TiposVehiculo">
+            <EntityTypeMapping TypeName="AlquilerVehiculosModel.TiposVehiculo">
+              <MappingFragment StoreEntitySet="TiposVehiculo">
+                <ScalarProperty Name="TipoId" ColumnName="TipoId" />
+                <ScalarProperty Name="NombreTipo" ColumnName="NombreTipo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Usuarios">
+            <EntityTypeMapping TypeName="AlquilerVehiculosModel.Usuarios">
+              <MappingFragment StoreEntitySet="Usuarios">
+                <ScalarProperty Name="UsuarioId" ColumnName="UsuarioId" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Apellido" ColumnName="Apellido" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="NombreUsuario" ColumnName="NombreUsuario" />
+                <ScalarProperty Name="Contrasenia" ColumnName="Contrasenia" />
+                <ScalarProperty Name="RolId" ColumnName="RolId" />
+                <ScalarProperty Name="FechaRegistro" ColumnName="FechaRegistro" />
+                <ScalarProperty Name="Activo" ColumnName="Activo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Vehiculos">
+            <EntityTypeMapping TypeName="AlquilerVehiculosModel.Vehiculos">
+              <MappingFragment StoreEntitySet="Vehiculos">
+                <ScalarProperty Name="VehiculoId" ColumnName="VehiculoId" />
+                <ScalarProperty Name="Placa" ColumnName="Placa" />
+                <ScalarProperty Name="Marca" ColumnName="Marca" />
+                <ScalarProperty Name="Modelo" ColumnName="Modelo" />
+                <ScalarProperty Name="Anio" ColumnName="Anio" />
+                <ScalarProperty Name="TipoId" ColumnName="TipoId" />
+                <ScalarProperty Name="EstadoId" ColumnName="EstadoId" />
+                <ScalarProperty Name="Activo" ColumnName="Activo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
