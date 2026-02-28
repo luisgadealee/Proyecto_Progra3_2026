@@ -2,7 +2,7 @@
 -- SCRIPT : AlquilerVehiculos.sql
 -- SISTEMA: Sistema de Alquiler de Vehiculos
 -- MOTOR  : SQL Server (localhost)
--- AUTOR  : Ingenieria en Sistemas - Proyecto Final
+-- AUTOR  : Ingenieria en Sistemas - Proyecto Final - Luis Fernando Gadea Lee - Jorge Arroyo Alfaro
 -- NOTAS  : Ejecutar completo en SQL Server Management Studio.
 --          Crea la base de datos, tablas, relaciones y datos de prueba.
 -- =====================================================================
@@ -10,9 +10,9 @@
 
 -- =====================================================================
 -- PASO 1: Crear la base de datos
--- Si ya existe la elimina y la vuelve a crear (util para pruebas)
 -- =====================================================================
 
+-- La idea es buscar la base de datos si existe, y borrarla para volverla a crear
 IF EXISTS (SELECT name FROM sys.databases WHERE name = 'AlquilerVehiculos')
 BEGIN
     -- Forzar cierre de conexiones activas antes de eliminar
@@ -30,14 +30,14 @@ GO
 
 
 -- =====================================================================
--- PASO 2: Tablas de catalogos (tablas de referencia)
--- Se crean primero porque las tablas principales las referencian
+-- PASO 2: Tablas Sub Tablas
+-- Se crean primero porque las tablas principales necesitan referencias
 -- =====================================================================
 
 -- ---------------------------------------------------------------------
 -- Tabla: Roles
 -- Almacena los roles disponibles del sistema.
--- Valores iniciales: Administrador, Cliente, SuperUsuario
+-- Valores iniciales: Administrador, Cliente, SuperUsuario, Vendedor
 -- ---------------------------------------------------------------------
 CREATE TABLE Roles
 (
@@ -112,7 +112,6 @@ GO
 
 -- =====================================================================
 -- PASO 3: Tablas principales
--- Se crean despues de los catalogos porque dependen de ellos
 -- =====================================================================
 
 -- ---------------------------------------------------------------------
@@ -169,8 +168,6 @@ GO
 -- ---------------------------------------------------------------------
 -- Tabla: Tarifas
 -- Cada vehiculo puede tener multiples tarifas segun el tipo.
--- La combinacion VehiculoId + TipoTarifaId debe ser unica
--- para evitar tarifas duplicadas del mismo tipo en el mismo vehiculo.
 -- ---------------------------------------------------------------------
 CREATE TABLE Tarifas
 (
@@ -193,8 +190,6 @@ GO
 -- Registro central del sistema. Vincula usuario, vehiculo y tarifa.
 -- FechaDevolucion es NULL hasta que el administrador registre
 -- la devolucion del vehiculo.
--- CostoDanios y MultaRetraso los ingresa el administrador al cerrar.
--- CostoTotal NO se guarda aqui, se calcula en la BLL con el patron Strategy.
 -- ---------------------------------------------------------------------
 CREATE TABLE Alquileres
 (
@@ -289,7 +284,6 @@ GO
 -- PASO 5: Datos de prueba
 -- Usuarios, vehiculos, tarifas y alquileres de ejemplo.
 -- Las contrasenas estan en texto plano aqui solo para pruebas.
--- En produccion el sistema guarda el hash desde la BLL.
 -- =====================================================================
 
 -- ---------------------------------------------------------------------
@@ -418,10 +412,6 @@ GO
 -- PASO 7: Crear usuario de SQL Server para la aplicacion
 -- Principio de minimo privilegio: el usuario solo tiene acceso
 -- a la base de datos AlquilerVehiculos, no a todo el servidor.
--- 
--- IMPORTANTE: Cambiar 'AppAlquiler' y 'App123!' por las credenciales
--- que prefieran. Usar la misma contrasena en todos los equipos
--- del equipo para que la cadena de conexion sea identica.
 -- =====================================================================
 
 -- Cambiar al contexto del servidor (master) para crear el login
