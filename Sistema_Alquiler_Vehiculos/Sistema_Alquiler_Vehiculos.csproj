@@ -94,6 +94,9 @@
     <Compile Include="DAL\Tarifas.cs">
       <DependentUpon>AlquilerVehiculosModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="DAL\Telefonos.cs">
+      <DependentUpon>AlquilerVehiculosModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="DAL\TiposTarifa.cs">
       <DependentUpon>AlquilerVehiculosModel.tt</DependentUpon>
     </Compile>

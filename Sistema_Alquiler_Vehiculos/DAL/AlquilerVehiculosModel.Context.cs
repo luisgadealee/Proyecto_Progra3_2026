@@ -31,6 +31,7 @@ namespace Sistema_Alquiler_Vehiculos.DAL
         public virtual DbSet<Pagos> Pagos { get; set; }
         public virtual DbSet<Roles> Roles { get; set; }
         public virtual DbSet<Tarifas> Tarifas { get; set; }
+        public virtual DbSet<Telefonos> Telefonos { get; set; }
         public virtual DbSet<TiposTarifa> TiposTarifa { get; set; }
         public virtual DbSet<TiposVehiculo> TiposVehiculo { get; set; }
         public virtual DbSet<Usuarios> Usuarios { get; set; }

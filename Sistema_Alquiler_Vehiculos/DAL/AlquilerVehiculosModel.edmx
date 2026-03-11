@@ -61,6 +61,14 @@
           <Property Name="TipoTarifaId" Type="int" Nullable="false" />
           <Property Name="Monto" Type="decimal" Precision="10" Scale="2" Nullable="false" />
         </EntityType>
+        <EntityType Name="Telefonos">
+          <Key>
+            <PropertyRef Name="TelefonoId" />
+          </Key>
+          <Property Name="TelefonoId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UsuarioId" Type="int" Nullable="false" />
+          <Property Name="Numero" Type="varchar" MaxLength="20" Nullable="false" />
+        </EntityType>
         <EntityType Name="TiposTarifa">
           <Key>
             <PropertyRef Name="TipoTarifaId" />
@@ -82,6 +90,7 @@
           <Property Name="UsuarioId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Nombre" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="Apellido" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Cedula" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="Email" Type="varchar" MaxLength="150" Nullable="false" />
           <Property Name="NombreUsuario" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="Contrasenia" Type="varchar" MaxLength="255" Nullable="false" />
@@ -186,6 +195,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Telefonos_Usuarios">
+          <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="1" />
+          <End Role="Telefonos" Type="Self.Telefonos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuarios">
+              <PropertyRef Name="UsuarioId" />
+            </Principal>
+            <Dependent Role="Telefonos">
+              <PropertyRef Name="UsuarioId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Usuarios_Roles">
           <End Role="Roles" Type="Self.Roles" Multiplicity="1" />
           <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="*" />
@@ -229,6 +250,7 @@
           <EntitySet Name="Pagos" EntityType="Self.Pagos" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tarifas" EntityType="Self.Tarifas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Telefonos" EntityType="Self.Telefonos" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TiposTarifa" EntityType="Self.TiposTarifa" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TiposVehiculo" EntityType="Self.TiposVehiculo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Usuarios" EntityType="Self.Usuarios" Schema="dbo" store:Type="Tables" />
@@ -260,6 +282,10 @@
           <AssociationSet Name="FK_Tarifas_Vehiculos" Association="Self.FK_Tarifas_Vehiculos">
             <End Role="Vehiculos" EntitySet="Vehiculos" />
             <End Role="Tarifas" EntitySet="Tarifas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Telefonos_Usuarios" Association="Self.FK_Telefonos_Usuarios">
+            <End Role="Usuarios" EntitySet="Usuarios" />
+            <End Role="Telefonos" EntitySet="Telefonos" />
           </AssociationSet>
           <AssociationSet Name="FK_Usuarios_Roles" Association="Self.FK_Usuarios_Roles">
             <End Role="Roles" EntitySet="Roles" />
@@ -347,6 +373,15 @@
           <NavigationProperty Name="TiposTarifa" Relationship="Self.FK_Tarifas_TiposTarifa" FromRole="Tarifas" ToRole="TiposTarifa" />
           <NavigationProperty Name="Vehiculos" Relationship="Self.FK_Tarifas_Vehiculos" FromRole="Tarifas" ToRole="Vehiculos" />
         </EntityType>
+        <EntityType Name="Telefonos">
+          <Key>
+            <PropertyRef Name="TelefonoId" />
+          </Key>
+          <Property Name="TelefonoId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UsuarioId" Type="Int32" Nullable="false" />
+          <Property Name="Numero" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Usuarios" Relationship="Self.FK_Telefonos_Usuarios" FromRole="Telefonos" ToRole="Usuarios" />
+        </EntityType>
         <EntityType Name="TiposTarifa">
           <Key>
             <PropertyRef Name="TipoTarifaId" />
@@ -370,6 +405,7 @@
           <Property Name="UsuarioId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Apellido" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Cedula" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Email" Type="String" MaxLength="150" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="NombreUsuario" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Contrasenia" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
@@ -378,6 +414,7 @@
           <Property Name="Activo" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Alquileres" Relationship="Self.FK_Alquileres_Usuarios" FromRole="Usuarios" ToRole="Alquileres" />
           <NavigationProperty Name="Roles" Relationship="Self.FK_Usuarios_Roles" FromRole="Usuarios" ToRole="Roles" />
+          <NavigationProperty Name="Telefonos" Relationship="Self.FK_Telefonos_Usuarios" FromRole="Usuarios" ToRole="Telefonos" />
         </EntityType>
         <EntityType Name="Vehiculos">
           <Key>
@@ -504,6 +541,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Telefonos_Usuarios">
+          <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="1" />
+          <End Role="Telefonos" Type="Self.Telefonos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuarios">
+              <PropertyRef Name="UsuarioId" />
+            </Principal>
+            <Dependent Role="Telefonos">
+              <PropertyRef Name="UsuarioId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Vehiculos_Tipo">
           <End Role="TiposVehiculo" Type="Self.TiposVehiculo" Multiplicity="1" />
           <End Role="Vehiculos" Type="Self.Vehiculos" Multiplicity="*" />
@@ -523,6 +572,7 @@
           <EntitySet Name="Pagos" EntityType="Self.Pagos" />
           <EntitySet Name="Roles" EntityType="Self.Roles" />
           <EntitySet Name="Tarifas" EntityType="Self.Tarifas" />
+          <EntitySet Name="Telefonos" EntityType="Self.Telefonos" />
           <EntitySet Name="TiposTarifa" EntityType="Self.TiposTarifa" />
           <EntitySet Name="TiposVehiculo" EntityType="Self.TiposVehiculo" />
           <EntitySet Name="Usuarios" EntityType="Self.Usuarios" />
@@ -562,6 +612,10 @@
           <AssociationSet Name="FK_Tarifas_Vehiculos" Association="Self.FK_Tarifas_Vehiculos">
             <End Role="Vehiculos" EntitySet="Vehiculos" />
             <End Role="Tarifas" EntitySet="Tarifas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Telefonos_Usuarios" Association="Self.FK_Telefonos_Usuarios">
+            <End Role="Usuarios" EntitySet="Usuarios" />
+            <End Role="Telefonos" EntitySet="Telefonos" />
           </AssociationSet>
           <AssociationSet Name="FK_Vehiculos_Tipo" Association="Self.FK_Vehiculos_Tipo">
             <End Role="TiposVehiculo" EntitySet="TiposVehiculo" />
@@ -636,6 +690,15 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Telefonos">
+            <EntityTypeMapping TypeName="AlquilerVehiculosModel.Telefonos">
+              <MappingFragment StoreEntitySet="Telefonos">
+                <ScalarProperty Name="TelefonoId" ColumnName="TelefonoId" />
+                <ScalarProperty Name="UsuarioId" ColumnName="UsuarioId" />
+                <ScalarProperty Name="Numero" ColumnName="Numero" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="TiposTarifa">
             <EntityTypeMapping TypeName="AlquilerVehiculosModel.TiposTarifa">
               <MappingFragment StoreEntitySet="TiposTarifa">
@@ -658,6 +721,7 @@
                 <ScalarProperty Name="UsuarioId" ColumnName="UsuarioId" />
                 <ScalarProperty Name="Nombre" ColumnName="Nombre" />
                 <ScalarProperty Name="Apellido" ColumnName="Apellido" />
+                <ScalarProperty Name="Cedula" ColumnName="Cedula" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="NombreUsuario" ColumnName="NombreUsuario" />
                 <ScalarProperty Name="Contrasenia" ColumnName="Contrasenia" />

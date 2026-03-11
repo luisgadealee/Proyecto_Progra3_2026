@@ -18,11 +18,13 @@ namespace Sistema_Alquiler_Vehiculos.DAL
         public Usuarios()
         {
             this.Alquileres = new HashSet<Alquileres>();
+            this.Telefonos = new HashSet<Telefonos>();
         }
     
         public int UsuarioId { get; set; }
         public string Nombre { get; set; }
         public string Apellido { get; set; }
+        public string Cedula { get; set; }
         public string Email { get; set; }
         public string NombreUsuario { get; set; }
         public string Contrasenia { get; set; }
@@ -33,5 +35,7 @@ namespace Sistema_Alquiler_Vehiculos.DAL
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Alquileres> Alquileres { get; set; }
         public virtual Roles Roles { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Telefonos> Telefonos { get; set; }
     }
 }
