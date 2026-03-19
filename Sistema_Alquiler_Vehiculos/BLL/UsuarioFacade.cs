@@ -10,10 +10,6 @@ using Sistema_Alquiler_Vehiculos.DAL;
 
 namespace Sistema_Alquiler_Vehiculos.BLL
 {
-    /// <summary>
-    /// Facade de usuarios. Los formularios solo hablan con esta clase,
-    /// nunca acceden directamente a Entity Framework ni a la base de datos.
-    /// </summary>
     public class UsuarioFacade
     {
         // El DbContext que EF generó automáticamente.
@@ -37,16 +33,6 @@ namespace Sistema_Alquiler_Vehiculos.BLL
         // Métodos públicos
         // ─────────────────────────────────────────────────────────────────
 
-        /// <summary>
-        /// Valida las credenciales de un usuario contra la base de datos.
-        /// Verifica que exista, que la contraseña sea correcta y que esté activo.
-        /// </summary>
-        /// <param name="nombreUsuario">Nombre de usuario ingresado en el form</param>
-        /// <param name="contrasenia">Contraseña ingresada en el form</param>
-        /// <returns>
-        /// El objeto Usuarios si las credenciales son correctas.
-        /// Null si el usuario no existe, la contraseña es incorrecta o está inactivo.
-        /// </returns>
         public Usuarios ValidarCredenciales(string nombreUsuario, string contrasenia)
         {
             // Busca en la BD un usuario que coincida con ambos campos
