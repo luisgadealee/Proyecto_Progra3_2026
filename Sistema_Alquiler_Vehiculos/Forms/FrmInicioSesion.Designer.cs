@@ -36,7 +36,7 @@
             this.lblContrasenia = new System.Windows.Forms.Label();
             this.lblTituloInicio = new System.Windows.Forms.Label();
             this.btnConectar = new System.Windows.Forms.Button();
-            this.btnCrearUsuario = new System.Windows.Forms.Button();
+            this.btnRegistrarse = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.ImgAutos)).BeginInit();
             this.SuspendLayout();
             // 
@@ -53,6 +53,7 @@
             // 
             this.lblUsuario.AutoSize = true;
             this.lblUsuario.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblUsuario.ForeColor = System.Drawing.Color.White;
             this.lblUsuario.Location = new System.Drawing.Point(153, 265);
             this.lblUsuario.Name = "lblUsuario";
             this.lblUsuario.Size = new System.Drawing.Size(102, 29);
@@ -83,6 +84,7 @@
             // 
             this.lblContrasenia.AutoSize = true;
             this.lblContrasenia.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblContrasenia.ForeColor = System.Drawing.Color.White;
             this.lblContrasenia.Location = new System.Drawing.Point(113, 317);
             this.lblContrasenia.Name = "lblContrasenia";
             this.lblContrasenia.Size = new System.Drawing.Size(142, 29);
@@ -94,7 +96,7 @@
             this.lblTituloInicio.AutoSize = true;
             this.lblTituloInicio.BackColor = System.Drawing.Color.Transparent;
             this.lblTituloInicio.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTituloInicio.ForeColor = System.Drawing.SystemColors.Desktop;
+            this.lblTituloInicio.ForeColor = System.Drawing.Color.White;
             this.lblTituloInicio.Location = new System.Drawing.Point(14, 22);
             this.lblTituloInicio.Name = "lblTituloInicio";
             this.lblTituloInicio.Size = new System.Drawing.Size(742, 39);
@@ -114,24 +116,25 @@
             this.btnConectar.UseVisualStyleBackColor = true;
             this.btnConectar.Click += new System.EventHandler(this.btnConectar_Click);
             // 
-            // btnCrearUsuario
+            // btnRegistrarse
             // 
-            this.btnCrearUsuario.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnCrearUsuario.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCrearUsuario.Location = new System.Drawing.Point(617, 407);
-            this.btnCrearUsuario.Name = "btnCrearUsuario";
-            this.btnCrearUsuario.Size = new System.Drawing.Size(132, 44);
-            this.btnCrearUsuario.TabIndex = 7;
-            this.btnCrearUsuario.Text = "Crear usuario";
-            this.btnCrearUsuario.UseVisualStyleBackColor = true;
+            this.btnRegistrarse.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnRegistrarse.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnRegistrarse.Location = new System.Drawing.Point(617, 407);
+            this.btnRegistrarse.Name = "btnRegistrarse";
+            this.btnRegistrarse.Size = new System.Drawing.Size(132, 44);
+            this.btnRegistrarse.TabIndex = 7;
+            this.btnRegistrarse.Text = "Registrarse";
+            this.btnRegistrarse.UseVisualStyleBackColor = true;
+            this.btnRegistrarse.Click += new System.EventHandler(this.btnRegistrarse_Click);
             // 
             // FrmInicioSesion
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Gainsboro;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(24)))), ((int)(((byte)(27)))));
             this.ClientSize = new System.Drawing.Size(772, 469);
-            this.Controls.Add(this.btnCrearUsuario);
+            this.Controls.Add(this.btnRegistrarse);
             this.Controls.Add(this.btnConectar);
             this.Controls.Add(this.lblTituloInicio);
             this.Controls.Add(this.lblContrasenia);
@@ -163,6 +166,6 @@
         private System.Windows.Forms.Label lblContrasenia;
         private System.Windows.Forms.Label lblTituloInicio;
         private System.Windows.Forms.Button btnConectar;
-        private System.Windows.Forms.Button btnCrearUsuario;
+        private System.Windows.Forms.Button btnRegistrarse;
     }
 }

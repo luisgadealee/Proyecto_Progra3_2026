@@ -10,6 +10,7 @@ using Sistema_Alquiler_Vehiculos.DAL;
 using System;
 using System.Linq.Expressions;
 using System.Windows.Forms;
+using Sistema_Alquiler_Vehiculos.Forms;
 
 namespace Sistema_Alquiler_Vehiculos.Forms
 {
@@ -82,40 +83,53 @@ namespace Sistema_Alquiler_Vehiculos.Forms
             ValidarCampos();
         }
 
+
+        // Valida las credenciales ingresadas y abre el formulario principal según el rol del usuario
         private void btnConectar_Click(object sender, EventArgs e)
         {
-            // Obtiene las credenciales ingresadas por el usuario
             string nombreUsuario = txtUsuario.Text.Trim();
             string contrasenia = txtContrasenia.Text.Trim();
 
-            // Le pide a la Facade que valide las credenciales.
-            // El formulario no sabe cómo se valida, solo recibe el resultado.
             Usuarios usuarioActivo = _usuarioFacade.ValidarCredenciales(
                                          nombreUsuario, contrasenia);
 
-            // Si la Facade devuelve null las credenciales son incorrectas
             if (usuarioActivo == null)
             {
                 MessageBox.Show(
-                    "Usuario o contraseña incorrectos.",
+                    "Usuario o contrasenia incorrectos.",
                     "Acceso denegado",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
-
-                // Limpia los campos y devuelve el foco al usuario
                 txtContrasenia.Clear();
                 txtUsuario.Focus();
                 return;
             }
 
-            // Credenciales correctas, mostrar bienvenida.
-            // Aquí después se abrirá el FrmPrincipal cuando esté listo.
-            MessageBox.Show(
-                $"Bienvenido, {usuarioActivo.Nombre} {usuarioActivo.Apellido}.\n" +
-                $"Rol: {usuarioActivo.Roles.NombreRol}",
-                "Acceso concedido",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+            // Abre el formulario principal según el rol del usuario
+            Form frmPrincipal = null;
+
+            switch (usuarioActivo.RolId)
+            {
+                case 1:
+                    frmPrincipal = new FrmPrincipalCliente(usuarioActivo);
+                    break;
+                case 2:
+                    frmPrincipal = new FrmPrincipalVendedor(usuarioActivo);
+                    break;
+                case 3:
+                    frmPrincipal = new FrmPrincipalAdministrador(usuarioActivo);
+                    break;
+                case 4:
+                    frmPrincipal = new FrmPrincipalSuperUsuario(usuarioActivo);
+                    break;
+            }
+
+            if (frmPrincipal == null) return;
+
+            // Oculta el login y abre el formulario principal
+            this.Hide();
+            frmPrincipal.ShowDialog();
+            this.Close();
         }
 
         // ─────────────────────────────────────────────────────────────────────
@@ -138,6 +152,12 @@ namespace Sistema_Alquiler_Vehiculos.Forms
             //Y `usuarioTieneTexto && contraseniaTieneTexto` también devuelve `true` o `false`. Entonces puedes asignar directamente el resultado de la expresión a la propiedad.
             //"No compares un booleano contra true o false, ya ES un booleano."
             btnConectar.Enabled = usuarioTieneTexto && contraseniaTieneTexto;
+        }
+
+        private void btnRegistrarse_Click(object sender, EventArgs e)
+        {
+            var frm = new FrmRegistro();
+            frm.ShowDialog();
         }
     }
 }

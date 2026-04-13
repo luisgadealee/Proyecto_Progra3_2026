@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BLL\UsuarioFacade.cs" />
+    <Compile Include="BLL\VehiculoFacade.cs" />
     <Compile Include="DAL\Alquileres.cs">
       <DependentUpon>AlquilerVehiculosModel.tt</DependentUpon>
     </Compile>
@@ -121,6 +122,36 @@
     <Compile Include="Forms\FrmMain.Designer.cs">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FrmPrincipalAdministrador.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmPrincipalAdministrador.Designer.cs">
+      <DependentUpon>FrmPrincipalAdministrador.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmPrincipalCliente.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmPrincipalCliente.Designer.cs">
+      <DependentUpon>FrmPrincipalCliente.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmPrincipalSuperUsuario.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmPrincipalSuperUsuario.Designer.cs">
+      <DependentUpon>FrmPrincipalSuperUsuario.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmPrincipalVendedor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmPrincipalVendedor.Designer.cs">
+      <DependentUpon>FrmPrincipalVendedor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmRegistro.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmRegistro.Designer.cs">
+      <DependentUpon>FrmRegistro.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\FrmInicioSesion.resx">
@@ -128,6 +159,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmPrincipalAdministrador.resx">
+      <DependentUpon>FrmPrincipalAdministrador.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmPrincipalCliente.resx">
+      <DependentUpon>FrmPrincipalCliente.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmPrincipalSuperUsuario.resx">
+      <DependentUpon>FrmPrincipalSuperUsuario.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmPrincipalVendedor.resx">
+      <DependentUpon>FrmPrincipalVendedor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmRegistro.resx">
+      <DependentUpon>FrmRegistro.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
