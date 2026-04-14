@@ -1,8 +1,8 @@
 ﻿// ─────────────────────────────────────────────────────────────────────────────
-// Archivo  : VehiculoFacade.cs
+// Archivo  : PagoFacade.cs
 // Capa     : BLL (Business Logic Layer)
 // Propósito: Intermediario entre los formularios y la base de datos
-//            para todo lo relacionado con vehículos.
+//            para todo lo relacionado con pagos.
 // Patrón   : Facade
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -13,21 +13,21 @@ using Sistema_Alquiler_Vehiculos.DAL;
 namespace Sistema_Alquiler_Vehiculos.BLL
 {
 
-    // Facade de vehículos. Los formularios solo hablan con esta clase.
-    public class VehiculoFacade
+    public class PagoFacade
     {
         // ─────────────────────────────────────────────────────────────────
         // Atributos
         // ─────────────────────────────────────────────────────────────────
 
-        // Conexión a la base de datos a través de Entity Framework.
+        // Conxion a la base de datos a través de Entity Framework.
         private readonly AlquilerVehiculosEntities _db;
 
         // ─────────────────────────────────────────────────────────────────
         // Constructor
         // ─────────────────────────────────────────────────────────────────
 
-        public VehiculoFacade()
+        // Constructor que inicializa el contexto de Entity Framework.
+        public PagoFacade()
         {
             _db = new AlquilerVehiculosEntities();
         }
@@ -36,44 +36,22 @@ namespace Sistema_Alquiler_Vehiculos.BLL
         // Métodos públicos
         // ─────────────────────────────────────────────────────────────────
 
-
-        // Obtiene todos los vehículos disponibles para alquilar.
-        // Se usa para llenar el DataGridView en el formulario de alquiler.
-        public List<Vehiculos> ObtenerDisponibles()
+        // Obtiene todos los pagos de un cliente específico.
+        public List<Pagos> ObtenerPorCliente(int usuarioId)
         {
-            return _db.Vehiculos
-                      .Where(v => v.EstadoId == 1 && v.Activo == true)
+            return _db.Pagos
+                      .Where(p => p.Alquileres.UsuarioId == usuarioId)
                       .ToList();
         }
 
-
-        // Obtiene todos los vehículos disponibles filtrados por marca.
-        // Se usa para el filtro en el ComboBox.
-        public List<Vehiculos> ObtenerDisponiblesPorMarca(string marca)
+        // Obtiene los pagos pendientes de un cliente.
+        // Un pago se considera pendiente si su EstadoPago es "Pendiente".
+        public List<Pagos> ObtenerPendientesPorCliente(int usuarioId)
         {
-            return _db.Vehiculos
-                      .Where(v => v.EstadoId == 1 && v.Activo == true
-                               && v.Marca == marca)
+            return _db.Pagos
+                      .Where(p => p.Alquileres.UsuarioId == usuarioId
+                               && p.EstadoPago == "Pendiente")
                       .ToList();
-        }
-
-        // Obtiene todas las marcas distintas de vehículos disponibles.
-        // Se usa para llenar el ComboBox de filtro.
-        public List<string> ObtenerMarcasDisponibles()
-        {
-            return _db.Vehiculos
-                      .Where(v => v.EstadoId == 1 && v.Activo == true)
-                      .Select(v => v.Marca)
-                      .Distinct()
-                      .ToList();
-        }
-
-        // Obtiene un vehículo por su ID. Se usa para mostrar detalles o editar.
-        // Se usa para obtener el vehículo seleccionado en el DataGridView y
-        // mostrar su información en los campos de texto para editar o ver detalles.
-        public Vehiculos ObtenerPorId(int vehiculoId)
-        {
-            return _db.Vehiculos.Find(vehiculoId);
         }
     }
 }

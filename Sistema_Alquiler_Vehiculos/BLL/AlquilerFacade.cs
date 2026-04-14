@@ -1,20 +1,21 @@
 ﻿// ─────────────────────────────────────────────────────────────────────────────
-// Archivo  : VehiculoFacade.cs
+// Archivo  : AlquilerFacade.cs
 // Capa     : BLL (Business Logic Layer)
 // Propósito: Intermediario entre los formularios y la base de datos
-//            para todo lo relacionado con vehículos.
+//            para todo lo relacionado con alquileres.
 // Patrón   : Facade
 // ─────────────────────────────────────────────────────────────────────────────
 
+using Sistema_Alquiler_Vehiculos.DAL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Sistema_Alquiler_Vehiculos.DAL;
 
 namespace Sistema_Alquiler_Vehiculos.BLL
 {
 
-    // Facade de vehículos. Los formularios solo hablan con esta clase.
-    public class VehiculoFacade
+    // Facade de alquileres. Los formularios solo hablan con esta clase.
+    public class AlquilerFacade
     {
         // ─────────────────────────────────────────────────────────────────
         // Atributos
@@ -27,7 +28,8 @@ namespace Sistema_Alquiler_Vehiculos.BLL
         // Constructor
         // ─────────────────────────────────────────────────────────────────
 
-        public VehiculoFacade()
+        // Constructor que inicializa el contexto de Entity Framework.
+        public AlquilerFacade()
         {
             _db = new AlquilerVehiculosEntities();
         }
@@ -36,44 +38,52 @@ namespace Sistema_Alquiler_Vehiculos.BLL
         // Métodos públicos
         // ─────────────────────────────────────────────────────────────────
 
-
-        // Obtiene todos los vehículos disponibles para alquilar.
-        // Se usa para llenar el DataGridView en el formulario de alquiler.
-        public List<Vehiculos> ObtenerDisponibles()
+        // Obtiene todos los alquileres de un cliente específico.
+        public List<Alquileres> ObtenerPorCliente(int usuarioId)
         {
-            return _db.Vehiculos
-                      .Where(v => v.EstadoId == 1 && v.Activo == true)
+            return _db.Alquileres
+                      .Where(a => a.UsuarioId == usuarioId)
                       .ToList();
         }
 
-
-        // Obtiene todos los vehículos disponibles filtrados por marca.
-        // Se usa para el filtro en el ComboBox.
-        public List<Vehiculos> ObtenerDisponiblesPorMarca(string marca)
+        // Obtiene los alquileres activos de un cliente.
+        // Un alquiler se considera activo si su EstadoId es 2 (Alquilado).
+        public List<Alquileres> ObtenerActivosPorCliente(int usuarioId)
         {
-            return _db.Vehiculos
-                      .Where(v => v.EstadoId == 1 && v.Activo == true
-                               && v.Marca == marca)
+            return _db.Alquileres
+                      .Where(a => a.UsuarioId == usuarioId && a.EstadoId == 2)
                       .ToList();
         }
 
-        // Obtiene todas las marcas distintas de vehículos disponibles.
-        // Se usa para llenar el ComboBox de filtro.
-        public List<string> ObtenerMarcasDisponibles()
+        // Registra un nuevo alquiler en la base de datos.
+        // El alquiler se crea con EstadoId = 1 (Reservado) y sin daños ni multas.
+        public void RegistrarAlquiler(int usuarioId, int vehiculoId, int tarifaId,
+                                       DateTime fechaInicio, DateTime fechaFinPactada)
         {
-            return _db.Vehiculos
-                      .Where(v => v.EstadoId == 1 && v.Activo == true)
-                      .Select(v => v.Marca)
-                      .Distinct()
-                      .ToList();
+            var alquiler = new Alquileres
+            {
+                UsuarioId = usuarioId,
+                VehiculoId = vehiculoId,
+                TarifaId = tarifaId,
+                EstadoId = 1,
+                FechaInicio = fechaInicio,
+                FechaFinPactada = fechaFinPactada,
+                TieneDanios = false,
+                CostoDanios = 0,
+                MultaRetraso = 0
+            };
+
+            _db.Alquileres.Add(alquiler);
+            _db.SaveChanges();
         }
 
-        // Obtiene un vehículo por su ID. Se usa para mostrar detalles o editar.
-        // Se usa para obtener el vehículo seleccionado en el DataGridView y
-        // mostrar su información en los campos de texto para editar o ver detalles.
-        public Vehiculos ObtenerPorId(int vehiculoId)
+        // Obtiene las tarifas disponibles para un vehículo específico.
+        // Esto es útil para mostrar las opciones de tarifas al cliente al momento de reservar.
+        public List<Tarifas> ObtenerTarifasPorVehiculo(int vehiculoId)
         {
-            return _db.Vehiculos.Find(vehiculoId);
+            return _db.Tarifas
+                      .Where(t => t.VehiculoId == vehiculoId)
+                      .ToList();
         }
     }
 }

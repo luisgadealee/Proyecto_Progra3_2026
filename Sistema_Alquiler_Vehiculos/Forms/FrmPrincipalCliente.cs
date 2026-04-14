@@ -29,7 +29,13 @@ namespace Sistema_Alquiler_Vehiculos.Forms
 
         // Facade de vehiculos para obtener los disponibles.
         private readonly VehiculoFacade _vehiculoFacade;
-         
+
+        // Facade de alquileres para obtener los alquileres del cliente.
+        private readonly AlquilerFacade _alquilerFacade;
+
+        // Facade de pagos para obtener los pagos del cliente.
+        private readonly PagoFacade _pagoFacade;
+
         // ─────────────────────────────────────────────────────────────────
         // Constructor
         // ─────────────────────────────────────────────────────────────────
@@ -40,6 +46,8 @@ namespace Sistema_Alquiler_Vehiculos.Forms
             InitializeComponent();
             _usuarioActivo = usuarioActivo;
             _vehiculoFacade = new VehiculoFacade();
+            _alquilerFacade = new AlquilerFacade();
+            _pagoFacade = new PagoFacade();
         }
 
         // ─────────────────────────────────────────────────────────────────
@@ -128,7 +136,7 @@ namespace Sistema_Alquiler_Vehiculos.Forms
         // Maneja el clic en la celda del botón Alquilar para abrir el formulario de alquiler.
         private void dgvVehiculos_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0) return;
+            if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
             if (dgvVehiculos.Columns[e.ColumnIndex].Name != "Alquilar") return;
 
             AbrirAlquiler();
@@ -141,6 +149,7 @@ namespace Sistema_Alquiler_Vehiculos.Forms
         // Carga los vehículos disponibles en el panel principal.
         private void CargarVehiculos()
         {
+            pnlFiltros.Visible = true;
             var vehiculos = _vehiculoFacade.ObtenerDisponibles();
             MostrarVehiculos(vehiculos);
 
@@ -155,17 +164,86 @@ namespace Sistema_Alquiler_Vehiculos.Forms
         // Carga los alquileres del cliente en el panel principal.
         private void CargarAlquileres()
         {
-            // Por implementar cuando tengamos AlquilerFacade completo
-            MessageBox.Show("Modulo de alquileres proximamente.", "Info",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            LimpiarColumnasExtra();
+            pnlFiltros.Visible = false;
+
+            var alquileres = _alquilerFacade.ObtenerPorCliente(_usuarioActivo.UsuarioId);
+
+            dgvVehiculos.DataSource = null;
+
+            if (alquileres.Count == 0)
+            {
+                MessageBox.Show(
+                    "No tienes alquileres registrados.",
+                    "Sin resultados",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            dgvVehiculos.DataSource = alquileres.Select(a => new
+            {
+                a.AlquilerId,
+                Vehiculo = a.Vehiculos.Marca + " " + a.Vehiculos.Modelo,
+                a.FechaInicio,
+                FechaFin = a.FechaFinPactada,
+                FechaDevolucion = a.FechaDevolucion.HasValue
+                                  ? a.FechaDevolucion.Value.ToShortDateString()
+                                  : "Pendiente",
+                Estado = a.EstadosAlquiler.NombreEstado,
+                a.MultaRetraso,
+                a.CostoDanios
+            }).ToList();
+
+            dgvVehiculos.Columns["AlquilerId"].HeaderText = "ID";
+            dgvVehiculos.Columns["Vehiculo"].HeaderText = "Vehiculo";
+            dgvVehiculos.Columns["FechaInicio"].HeaderText = "Inicio";
+            dgvVehiculos.Columns["FechaFin"].HeaderText = "Fin Pactado";
+            dgvVehiculos.Columns["FechaDevolucion"].HeaderText = "Devolucion";
+            dgvVehiculos.Columns["Estado"].HeaderText = "Estado";
+            dgvVehiculos.Columns["MultaRetraso"].HeaderText = "Multa";
+            dgvVehiculos.Columns["CostoDanios"].HeaderText = "Danios";
+
+            dgvVehiculos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
         // Carga los pagos del cliente en el panel principal.
         private void CargarPagos()
         {
-            // Por implementar cuando tengamos PagoFacade completo
-            MessageBox.Show("Modulo de pagos proximamente.", "Info",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            LimpiarColumnasExtra();
+            pnlFiltros.Visible = false;
+
+            var pagos = _pagoFacade.ObtenerPorCliente(_usuarioActivo.UsuarioId);
+
+            dgvVehiculos.DataSource = null;
+
+            if (pagos.Count == 0)
+            {
+                MessageBox.Show(
+                    "No tienes pagos registrados.",
+                    "Sin resultados",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            dgvVehiculos.DataSource = pagos.Select(p => new
+            {
+                p.PagoId,
+                Vehiculo = p.Alquileres.Vehiculos.Marca + " " + p.Alquileres.Vehiculos.Modelo,
+                p.Monto,
+                p.FechaPago,
+                p.EstadoPago
+            }).ToList();
+
+            dgvVehiculos.Columns["PagoId"].HeaderText = "ID";
+            dgvVehiculos.Columns["Vehiculo"].HeaderText = "Vehiculo";
+            dgvVehiculos.Columns["Monto"].HeaderText = "Monto";
+            dgvVehiculos.Columns["FechaPago"].HeaderText = "Fecha";
+            dgvVehiculos.Columns["EstadoPago"].HeaderText = "Estado";
+
+
+            dgvVehiculos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
         // Muestra los vehículos en el DataGridView, proyectando solo las columnas necesarias y agregando un botón de alquiler.
@@ -223,6 +301,9 @@ namespace Sistema_Alquiler_Vehiculos.Forms
                 };
                 dgvVehiculos.Columns.Add(btnAlquilar);
             }
+
+            // Siempre mantiene la columna Alquilar al final
+            dgvVehiculos.Columns["Alquilar"].DisplayIndex = dgvVehiculos.Columns.Count - 1;
         }
 
         // Abre el formulario de alquiler para el vehículo seleccionado.
@@ -230,11 +311,27 @@ namespace Sistema_Alquiler_Vehiculos.Forms
         {
             if (dgvVehiculos.SelectedRows.Count == 0) return;
 
-            // Por implementar cuando tengamos FrmRegistrarAlquiler
-            MessageBox.Show("Modulo de alquiler proximamente.", "Info",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            // Obtiene el ID del vehículo seleccionado
+            int vehiculoId = Convert.ToInt32(dgvVehiculos.SelectedRows[0].Cells["VehiculoId"].Value);
+
+            // Obtiene el vehículo completo desde la Facade
+            var vehiculo = _vehiculoFacade.ObtenerPorId(vehiculoId);
+
+            if (vehiculo == null) return;
+
+            // Abre el formulario de alquiler
+            var frm = new FrmRegistrarAlquiler(vehiculo, _usuarioActivo, _alquilerFacade);
+            frm.ShowDialog();
+
+            // Refresca la lista de vehículos al cerrar
+            CargarVehiculos();
         }
 
-        
+        // Limpia las columnas extra del DGV antes de cargar un nuevo modulo.
+        private void LimpiarColumnasExtra()
+        {
+            if (dgvVehiculos.Columns["Alquilar"] != null)
+                dgvVehiculos.Columns.Remove("Alquilar");
+        }
     }
 }

@@ -60,6 +60,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLL\AlquilerFacade.cs" />
+    <Compile Include="BLL\PagoFacade.cs" />
+    <Compile Include="BLL\TarifaComboItem.cs" />
     <Compile Include="BLL\UsuarioFacade.cs" />
     <Compile Include="BLL\VehiculoFacade.cs" />
     <Compile Include="DAL\Alquileres.cs">
@@ -146,6 +149,12 @@
     <Compile Include="Forms\FrmPrincipalVendedor.Designer.cs">
       <DependentUpon>FrmPrincipalVendedor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FrmRegistrarAlquiler.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmRegistrarAlquiler.Designer.cs">
+      <DependentUpon>FrmRegistrarAlquiler.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FrmRegistro.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -171,6 +180,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmPrincipalVendedor.resx">
       <DependentUpon>FrmPrincipalVendedor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmRegistrarAlquiler.resx">
+      <DependentUpon>FrmRegistrarAlquiler.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmRegistro.resx">
       <DependentUpon>FrmRegistro.cs</DependentUpon>
