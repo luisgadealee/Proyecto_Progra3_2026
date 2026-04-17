@@ -75,5 +75,57 @@ namespace Sistema_Alquiler_Vehiculos.BLL
         {
             return _db.Vehiculos.Find(vehiculoId);
         }
+
+        // ─────────────────────────────────────────────────────────────────
+        // Métodos para el Administrador (Mantenimiento CRUD)
+        // ─────────────────────────────────────────────────────────────────
+
+        // Obtiene TODOS los vehículos (activos, en mantenimiento, alquilados).
+        // Se usa para llenar la tabla principal del administrador.
+        public List<Vehiculos> ObtenerTodos()
+        {
+            // Usamos Include para traer el nombre del Tipo y del Estado, no solo el número
+            return _db.Vehiculos.Include("TiposVehiculo").Include("EstadosVehiculo").ToList();
+        }
+
+        // Obtiene la lista de tipos (Sedán, SUV, etc.) para el ComboBox.
+        public List<TiposVehiculo> ObtenerTipos()
+        {
+            return _db.TiposVehiculo.ToList();
+        }
+
+        // Obtiene la lista de estados (Disponible, Mantenimiento, etc.) para el ComboBox.
+        public List<EstadosVehiculo> ObtenerEstados()
+        {
+            return _db.EstadosVehiculo.ToList();
+        }
+
+        // Recibe un objeto Vehículo desde la pantalla y lo inserta en la base de datos.
+        public void Crear(Vehiculos nuevoVehiculo)
+        {
+            _db.Vehiculos.Add(nuevoVehiculo);
+            _db.SaveChanges(); // ¡El SaveChanges es el que hace el INSERT real en SQL!
+        }
+
+        // Recibe un vehículo editado, lo busca en la base de datos y sobreescribe sus datos.
+        public void Actualizar(Vehiculos vehiculoEditado)
+        {
+            // 1. Buscamos el registro original en la BD
+            var vehiculoDB = _db.Vehiculos.Find(vehiculoEditado.VehiculoId);
+
+            if (vehiculoDB != null)
+            {
+                // 2. Sobreescribimos solo los campos que el usuario puede cambiar
+                vehiculoDB.Placa = vehiculoEditado.Placa;
+                vehiculoDB.Marca = vehiculoEditado.Marca;
+                vehiculoDB.Modelo = vehiculoEditado.Modelo;
+                vehiculoDB.Anio = vehiculoEditado.Anio;
+                vehiculoDB.TipoId = vehiculoEditado.TipoId;
+                vehiculoDB.EstadoId = vehiculoEditado.EstadoId;
+
+                // 3. Guardamos los cambios (Esto hace un UPDATE en SQL)
+                _db.SaveChanges();
+            }
+        }
     }
 }

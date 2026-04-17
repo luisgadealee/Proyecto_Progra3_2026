@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="AlquilerVehiculosModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="AlquilerVehiculosModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Alquileres">
           <Key>
             <PropertyRef Name="AlquilerId" />
@@ -14,6 +14,7 @@
           <Property Name="VehiculoId" Type="int" Nullable="false" />
           <Property Name="TarifaId" Type="int" Nullable="false" />
           <Property Name="EstadoId" Type="int" Nullable="false" />
+          <Property Name="UsuarioAdminId" Type="int" />
           <Property Name="FechaInicio" Type="datetime" Nullable="false" />
           <Property Name="FechaFinPactada" Type="datetime" Nullable="false" />
           <Property Name="FechaDevolucion" Type="datetime" />
@@ -111,7 +112,19 @@
           <Property Name="EstadoId" Type="int" Nullable="false" />
           <Property Name="Activo" Type="bit" Nullable="false" />
         </EntityType>
-        <Association Name="FK_Alquileres_Estados">
+        <Association Name="fk_Alquileres_Admin">
+          <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="0..1" />
+          <End Role="Alquileres" Type="Self.Alquileres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuarios">
+              <PropertyRef Name="UsuarioId" />
+            </Principal>
+            <Dependent Role="Alquileres">
+              <PropertyRef Name="UsuarioAdminId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Alquileres_Estados">
           <End Role="EstadosAlquiler" Type="Self.EstadosAlquiler" Multiplicity="1" />
           <End Role="Alquileres" Type="Self.Alquileres" Multiplicity="*" />
           <ReferentialConstraint>
@@ -123,7 +136,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Alquileres_Tarifas">
+        <Association Name="fk_Alquileres_Tarifas">
           <End Role="Tarifas" Type="Self.Tarifas" Multiplicity="1" />
           <End Role="Alquileres" Type="Self.Alquileres" Multiplicity="*" />
           <ReferentialConstraint>
@@ -135,7 +148,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Alquileres_Usuarios">
+        <Association Name="fk_Alquileres_Usuarios">
           <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="1" />
           <End Role="Alquileres" Type="Self.Alquileres" Multiplicity="*" />
           <ReferentialConstraint>
@@ -147,7 +160,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Alquileres_Vehiculos">
+        <Association Name="fk_Alquileres_Vehiculos">
           <End Role="Vehiculos" Type="Self.Vehiculos" Multiplicity="1" />
           <End Role="Alquileres" Type="Self.Alquileres" Multiplicity="*" />
           <ReferentialConstraint>
@@ -159,7 +172,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Pagos_Alquileres">
+        <Association Name="fk_Pagos_Alquileres">
           <End Role="Alquileres" Type="Self.Alquileres" Multiplicity="1" />
           <End Role="Pagos" Type="Self.Pagos" Multiplicity="*" />
           <ReferentialConstraint>
@@ -171,7 +184,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Tarifas_TiposTarifa">
+        <Association Name="fk_Tarifas_TiposTarifa">
           <End Role="TiposTarifa" Type="Self.TiposTarifa" Multiplicity="1" />
           <End Role="Tarifas" Type="Self.Tarifas" Multiplicity="*" />
           <ReferentialConstraint>
@@ -183,7 +196,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Tarifas_Vehiculos">
+        <Association Name="fk_Tarifas_Vehiculos">
           <End Role="Vehiculos" Type="Self.Vehiculos" Multiplicity="1" />
           <End Role="Tarifas" Type="Self.Tarifas" Multiplicity="*" />
           <ReferentialConstraint>
@@ -195,7 +208,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Telefonos_Usuarios">
+        <Association Name="fk_Telefonos_Usuarios">
           <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="1" />
           <End Role="Telefonos" Type="Self.Telefonos" Multiplicity="*" />
           <ReferentialConstraint>
@@ -207,7 +220,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Usuarios_Roles">
+        <Association Name="fk_Usuarios_Roles">
           <End Role="Roles" Type="Self.Roles" Multiplicity="1" />
           <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="*" />
           <ReferentialConstraint>
@@ -219,7 +232,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Vehiculos_Estado">
+        <Association Name="fk_Vehiculos_Estado">
           <End Role="EstadosVehiculo" Type="Self.EstadosVehiculo" Multiplicity="1" />
           <End Role="Vehiculos" Type="Self.Vehiculos" Multiplicity="*" />
           <ReferentialConstraint>
@@ -231,7 +244,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Vehiculos_Tipo">
+        <Association Name="fk_Vehiculos_Tipo">
           <End Role="TiposVehiculo" Type="Self.TiposVehiculo" Multiplicity="1" />
           <End Role="Vehiculos" Type="Self.Vehiculos" Multiplicity="*" />
           <ReferentialConstraint>
@@ -255,53 +268,56 @@
           <EntitySet Name="TiposVehiculo" EntityType="Self.TiposVehiculo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Usuarios" EntityType="Self.Usuarios" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Vehiculos" EntityType="Self.Vehiculos" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_Alquileres_Estados" Association="Self.FK_Alquileres_Estados">
+          <AssociationSet Name="fk_Alquileres_Admin" Association="Self.fk_Alquileres_Admin">
+            <End Role="Usuarios" EntitySet="Usuarios" />
+            <End Role="Alquileres" EntitySet="Alquileres" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Alquileres_Estados" Association="Self.fk_Alquileres_Estados">
             <End Role="EstadosAlquiler" EntitySet="EstadosAlquiler" />
             <End Role="Alquileres" EntitySet="Alquileres" />
           </AssociationSet>
-          <AssociationSet Name="FK_Alquileres_Tarifas" Association="Self.FK_Alquileres_Tarifas">
+          <AssociationSet Name="fk_Alquileres_Tarifas" Association="Self.fk_Alquileres_Tarifas">
             <End Role="Tarifas" EntitySet="Tarifas" />
             <End Role="Alquileres" EntitySet="Alquileres" />
           </AssociationSet>
-          <AssociationSet Name="FK_Alquileres_Usuarios" Association="Self.FK_Alquileres_Usuarios">
+          <AssociationSet Name="fk_Alquileres_Usuarios" Association="Self.fk_Alquileres_Usuarios">
             <End Role="Usuarios" EntitySet="Usuarios" />
             <End Role="Alquileres" EntitySet="Alquileres" />
           </AssociationSet>
-          <AssociationSet Name="FK_Alquileres_Vehiculos" Association="Self.FK_Alquileres_Vehiculos">
+          <AssociationSet Name="fk_Alquileres_Vehiculos" Association="Self.fk_Alquileres_Vehiculos">
             <End Role="Vehiculos" EntitySet="Vehiculos" />
             <End Role="Alquileres" EntitySet="Alquileres" />
           </AssociationSet>
-          <AssociationSet Name="FK_Pagos_Alquileres" Association="Self.FK_Pagos_Alquileres">
+          <AssociationSet Name="fk_Pagos_Alquileres" Association="Self.fk_Pagos_Alquileres">
             <End Role="Alquileres" EntitySet="Alquileres" />
             <End Role="Pagos" EntitySet="Pagos" />
           </AssociationSet>
-          <AssociationSet Name="FK_Tarifas_TiposTarifa" Association="Self.FK_Tarifas_TiposTarifa">
+          <AssociationSet Name="fk_Tarifas_TiposTarifa" Association="Self.fk_Tarifas_TiposTarifa">
             <End Role="TiposTarifa" EntitySet="TiposTarifa" />
             <End Role="Tarifas" EntitySet="Tarifas" />
           </AssociationSet>
-          <AssociationSet Name="FK_Tarifas_Vehiculos" Association="Self.FK_Tarifas_Vehiculos">
+          <AssociationSet Name="fk_Tarifas_Vehiculos" Association="Self.fk_Tarifas_Vehiculos">
             <End Role="Vehiculos" EntitySet="Vehiculos" />
             <End Role="Tarifas" EntitySet="Tarifas" />
           </AssociationSet>
-          <AssociationSet Name="FK_Telefonos_Usuarios" Association="Self.FK_Telefonos_Usuarios">
+          <AssociationSet Name="fk_Telefonos_Usuarios" Association="Self.fk_Telefonos_Usuarios">
             <End Role="Usuarios" EntitySet="Usuarios" />
             <End Role="Telefonos" EntitySet="Telefonos" />
           </AssociationSet>
-          <AssociationSet Name="FK_Usuarios_Roles" Association="Self.FK_Usuarios_Roles">
+          <AssociationSet Name="fk_Usuarios_Roles" Association="Self.fk_Usuarios_Roles">
             <End Role="Roles" EntitySet="Roles" />
             <End Role="Usuarios" EntitySet="Usuarios" />
           </AssociationSet>
-          <AssociationSet Name="FK_Vehiculos_Estado" Association="Self.FK_Vehiculos_Estado">
+          <AssociationSet Name="fk_Vehiculos_Estado" Association="Self.fk_Vehiculos_Estado">
             <End Role="EstadosVehiculo" EntitySet="EstadosVehiculo" />
             <End Role="Vehiculos" EntitySet="Vehiculos" />
           </AssociationSet>
-          <AssociationSet Name="FK_Vehiculos_Tipo" Association="Self.FK_Vehiculos_Tipo">
+          <AssociationSet Name="fk_Vehiculos_Tipo" Association="Self.fk_Vehiculos_Tipo">
             <End Role="TiposVehiculo" EntitySet="TiposVehiculo" />
             <End Role="Vehiculos" EntitySet="Vehiculos" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="AlquilerVehiculosModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -325,6 +341,8 @@
           <NavigationProperty Name="Usuarios" Relationship="Self.FK_Alquileres_Usuarios" FromRole="Alquileres" ToRole="Usuarios" />
           <NavigationProperty Name="Vehiculos" Relationship="Self.FK_Alquileres_Vehiculos" FromRole="Alquileres" ToRole="Vehiculos" />
           <NavigationProperty Name="Pagos" Relationship="Self.FK_Pagos_Alquileres" FromRole="Alquileres" ToRole="Pagos" />
+          <Property Name="UsuarioAdminId" Type="Int32" />
+          <NavigationProperty Name="Usuarios1" Relationship="AlquilerVehiculosModel.fk_Alquileres_Admin" FromRole="Alquileres" ToRole="Usuarios" />
         </EntityType>
         <EntityType Name="EstadosAlquiler">
           <Key>
@@ -415,6 +433,7 @@
           <NavigationProperty Name="Alquileres" Relationship="Self.FK_Alquileres_Usuarios" FromRole="Usuarios" ToRole="Alquileres" />
           <NavigationProperty Name="Roles" Relationship="Self.FK_Usuarios_Roles" FromRole="Usuarios" ToRole="Roles" />
           <NavigationProperty Name="Telefonos" Relationship="Self.FK_Telefonos_Usuarios" FromRole="Usuarios" ToRole="Telefonos" />
+          <NavigationProperty Name="Alquileres1" Relationship="AlquilerVehiculosModel.fk_Alquileres_Admin" FromRole="Usuarios" ToRole="Alquileres" />
         </EntityType>
         <EntityType Name="Vehiculos">
           <Key>
@@ -621,7 +640,23 @@
             <End Role="TiposVehiculo" EntitySet="TiposVehiculo" />
             <End Role="Vehiculos" EntitySet="Vehiculos" />
           </AssociationSet>
+          <AssociationSet Name="fk_Alquileres_Admin" Association="AlquilerVehiculosModel.fk_Alquileres_Admin">
+            <End Role="Usuarios" EntitySet="Usuarios" />
+            <End Role="Alquileres" EntitySet="Alquileres" />
+          </AssociationSet>
         </EntityContainer>
+        <Association Name="fk_Alquileres_Admin">
+          <End Type="AlquilerVehiculosModel.Usuarios" Role="Usuarios" Multiplicity="0..1" />
+          <End Type="AlquilerVehiculosModel.Alquileres" Role="Alquileres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuarios">
+              <PropertyRef Name="UsuarioId" />
+            </Principal>
+            <Dependent Role="Alquileres">
+              <PropertyRef Name="UsuarioAdminId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -631,6 +666,7 @@
           <EntitySetMapping Name="Alquileres">
             <EntityTypeMapping TypeName="AlquilerVehiculosModel.Alquileres">
               <MappingFragment StoreEntitySet="Alquileres">
+                <ScalarProperty Name="UsuarioAdminId" ColumnName="UsuarioAdminId" />
                 <ScalarProperty Name="AlquilerId" ColumnName="AlquilerId" />
                 <ScalarProperty Name="UsuarioId" ColumnName="UsuarioId" />
                 <ScalarProperty Name="VehiculoId" ColumnName="VehiculoId" />

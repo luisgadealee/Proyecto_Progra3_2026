@@ -1,0 +1,136 @@
+﻿// ─────────────────────────────────────────────────────────────────────────────
+// Archivo  : FrmPerfil.cs
+// Capa     : Forms (Presentación)
+// Propósito: Formulario para que el cliente vea y actualice sus datos personales.
+// ─────────────────────────────────────────────────────────────────────────────
+
+using System;
+using System.Windows.Forms;
+using Sistema_Alquiler_Vehiculos.BLL;
+using Sistema_Alquiler_Vehiculos.DAL;
+
+namespace Sistema_Alquiler_Vehiculos.Forms
+{
+    public partial class FrmPerfil : Form
+    {
+        // ─────────────────────────────────────────────────────────────────
+        // Atributos
+        // ─────────────────────────────────────────────────────────────────
+
+        private readonly Usuarios _usuarioActivo;
+        private readonly UsuarioFacade _usuarioFacade;
+
+        // ─────────────────────────────────────────────────────────────────
+        // Constructor
+        // ─────────────────────────────────────────────────────────────────
+
+        // Inicializa el formulario con los datos del usuario que inició sesión.
+        public FrmPerfil(Usuarios usuarioActivo)
+        {
+            InitializeComponent();
+            _usuarioActivo = usuarioActivo;
+            _usuarioFacade = new UsuarioFacade();
+        }
+
+        // ─────────────────────────────────────────────────────────────────
+        // Eventos del formulario
+        // ─────────────────────────────────────────────────────────────────
+
+        private void FrmPerfil_Load(object sender, EventArgs e)
+        {
+            CargarDatosUsuario();
+        }
+
+        // ─────────────────────────────────────────────────────────────────
+        // Eventos de los botones
+        // ─────────────────────────────────────────────────────────────────
+
+        private void btnGuardar_Click(object sender, EventArgs e)
+        {
+            // 1. Validaciones básicas
+            if (string.IsNullOrWhiteSpace(txtNombre.Text) ||
+                string.IsNullOrWhiteSpace(txtApellido.Text) ||
+                string.IsNullOrWhiteSpace(txtEmail.Text))
+            {
+                MessageBox.Show(
+                    "El Nombre, Apellido y Correo son obligatorios.",
+                    "Validación",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            // 2. Validar contraseñas si el usuario intentó cambiarla
+            string nuevaClave = txtClaveNueva.Text.Trim();
+            string confirmarClave = txtConfirmarClave.Text.Trim();
+
+            if (!string.IsNullOrWhiteSpace(nuevaClave) || !string.IsNullOrWhiteSpace(confirmarClave))
+            {
+                if (nuevaClave != confirmarClave)
+                {
+                    MessageBox.Show(
+                        "Las contraseñas nuevas no coinciden.",
+                        "Error de Seguridad",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                    return;
+                }
+            }
+
+            // 3. Confirmación
+            var confirmacion = MessageBox.Show(
+                "¿Estás seguro de guardar los cambios en tu perfil?",
+                "Confirmar",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (confirmacion != DialogResult.Yes) return;
+
+            // 4. Enviar a la base de datos a través de la Facade
+            _usuarioFacade.ActualizarPerfil(
+                _usuarioActivo.UsuarioId,
+                txtNombre.Text.Trim(),
+                txtApellido.Text.Trim(),
+                txtEmail.Text.Trim(),
+                nuevaClave,
+                txtTelefono.Text.Trim()
+            );
+
+            // 5. Actualizar el objeto local para que los cambios se reflejen sin reiniciar sesión
+            _usuarioActivo.Nombre = txtNombre.Text.Trim();
+            _usuarioActivo.Apellido = txtApellido.Text.Trim();
+            _usuarioActivo.Email = txtEmail.Text.Trim();
+
+            MessageBox.Show(
+                "Perfil actualizado correctamente.",
+                "Éxito",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+
+            this.Close();
+        }
+
+        private void btnCancelar_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        // ─────────────────────────────────────────────────────────────────
+        // Métodos Privados
+        // ─────────────────────────────────────────────────────────────────
+
+        // Llena los TextBoxes con la información actual del usuario.
+        private void CargarDatosUsuario()
+        {
+            // Datos directos de la tabla Usuarios
+            txtNombre.Text = _usuarioActivo.Nombre;
+            txtApellido.Text = _usuarioActivo.Apellido;
+            txtCedula.Text = _usuarioActivo.Cedula;
+            txtEmail.Text = _usuarioActivo.Email;
+            txtUsuario.Text = _usuarioActivo.NombreUsuario;
+
+            // Dato desde la tabla Telefonos (a través de la Facade)
+            txtTelefono.Text = _usuarioFacade.ObtenerTelefonoPrincipal(_usuarioActivo.UsuarioId);
+        }
+    }
+}

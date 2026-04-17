@@ -40,17 +40,17 @@
             this.lblNombreUsuario = new System.Windows.Forms.Label();
             this.lblBienvenida = new System.Windows.Forms.Label();
             this.pnlContenido = new System.Windows.Forms.Panel();
-            this.pnlFiltros = new System.Windows.Forms.Panel();
-            this.lblMarca = new System.Windows.Forms.Label();
-            this.cmbMarca = new System.Windows.Forms.ComboBox();
-            this.btnFiltrar = new System.Windows.Forms.Button();
-            this.btnLimpiar = new System.Windows.Forms.Button();
             this.dgvVehiculos = new System.Windows.Forms.DataGridView();
+            this.pnlFiltros = new System.Windows.Forms.Panel();
+            this.btnLimpiar = new System.Windows.Forms.Button();
+            this.btnFiltrar = new System.Windows.Forms.Button();
+            this.cmbMarca = new System.Windows.Forms.ComboBox();
+            this.lblMarca = new System.Windows.Forms.Label();
             this.pnlMenu.SuspendLayout();
             this.pnlSuperior.SuspendLayout();
             this.pnlContenido.SuspendLayout();
-            this.pnlFiltros.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvVehiculos)).BeginInit();
+            this.pnlFiltros.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlMenu
@@ -61,7 +61,7 @@
             this.pnlMenu.Controls.Add(this.btnAlquileres);
             this.pnlMenu.Controls.Add(this.btnVehiculos);
             this.pnlMenu.Location = new System.Drawing.Point(16, 86);
-            this.pnlMenu.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlMenu.Margin = new System.Windows.Forms.Padding(4);
             this.pnlMenu.Name = "pnlMenu";
             this.pnlMenu.Size = new System.Drawing.Size(240, 453);
             this.pnlMenu.TabIndex = 1;
@@ -85,7 +85,7 @@
             this.btnPagos.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnPagos.ForeColor = System.Drawing.Color.White;
             this.btnPagos.Location = new System.Drawing.Point(45, 224);
-            this.btnPagos.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnPagos.Margin = new System.Windows.Forms.Padding(4);
             this.btnPagos.Name = "btnPagos";
             this.btnPagos.Size = new System.Drawing.Size(153, 44);
             this.btnPagos.TabIndex = 2;
@@ -99,7 +99,7 @@
             this.btnAlquileres.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAlquileres.ForeColor = System.Drawing.Color.White;
             this.btnAlquileres.Location = new System.Drawing.Point(44, 145);
-            this.btnAlquileres.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnAlquileres.Margin = new System.Windows.Forms.Padding(4);
             this.btnAlquileres.Name = "btnAlquileres";
             this.btnAlquileres.Size = new System.Drawing.Size(153, 44);
             this.btnAlquileres.TabIndex = 1;
@@ -113,7 +113,7 @@
             this.btnVehiculos.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnVehiculos.ForeColor = System.Drawing.Color.White;
             this.btnVehiculos.Location = new System.Drawing.Point(44, 71);
-            this.btnVehiculos.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnVehiculos.Margin = new System.Windows.Forms.Padding(4);
             this.btnVehiculos.Name = "btnVehiculos";
             this.btnVehiculos.Size = new System.Drawing.Size(153, 44);
             this.btnVehiculos.TabIndex = 0;
@@ -129,7 +129,7 @@
             this.pnlSuperior.Controls.Add(this.lblNombreUsuario);
             this.pnlSuperior.Controls.Add(this.lblBienvenida);
             this.pnlSuperior.Location = new System.Drawing.Point(16, 15);
-            this.pnlSuperior.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlSuperior.Margin = new System.Windows.Forms.Padding(4);
             this.pnlSuperior.Name = "pnlSuperior";
             this.pnlSuperior.Size = new System.Drawing.Size(1035, 62);
             this.pnlSuperior.TabIndex = 2;
@@ -141,7 +141,7 @@
             this.btnSalir.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnSalir.ForeColor = System.Drawing.Color.White;
             this.btnSalir.Location = new System.Drawing.Point(891, 15);
-            this.btnSalir.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnSalir.Margin = new System.Windows.Forms.Padding(4);
             this.btnSalir.Name = "btnSalir";
             this.btnSalir.Size = new System.Drawing.Size(128, 34);
             this.btnSalir.TabIndex = 4;
@@ -155,7 +155,7 @@
             this.btnPerfil.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnPerfil.ForeColor = System.Drawing.Color.White;
             this.btnPerfil.Location = new System.Drawing.Point(755, 15);
-            this.btnPerfil.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnPerfil.Margin = new System.Windows.Forms.Padding(4);
             this.btnPerfil.Name = "btnPerfil";
             this.btnPerfil.Size = new System.Drawing.Size(128, 34);
             this.btnPerfil.TabIndex = 3;
@@ -194,10 +194,28 @@
             this.pnlContenido.Controls.Add(this.dgvVehiculos);
             this.pnlContenido.Controls.Add(this.pnlFiltros);
             this.pnlContenido.Location = new System.Drawing.Point(264, 86);
-            this.pnlContenido.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlContenido.Margin = new System.Windows.Forms.Padding(4);
             this.pnlContenido.Name = "pnlContenido";
             this.pnlContenido.Size = new System.Drawing.Size(787, 453);
             this.pnlContenido.TabIndex = 3;
+            // 
+            // dgvVehiculos
+            // 
+            this.dgvVehiculos.AllowUserToAddRows = false;
+            this.dgvVehiculos.AllowUserToDeleteRows = false;
+            this.dgvVehiculos.BackgroundColor = System.Drawing.Color.Black;
+            this.dgvVehiculos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvVehiculos.Location = new System.Drawing.Point(14, 100);
+            this.dgvVehiculos.MultiSelect = false;
+            this.dgvVehiculos.Name = "dgvVehiculos";
+            this.dgvVehiculos.ReadOnly = true;
+            this.dgvVehiculos.RowHeadersWidth = 51;
+            this.dgvVehiculos.RowTemplate.Height = 24;
+            this.dgvVehiculos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvVehiculos.Size = new System.Drawing.Size(757, 336);
+            this.dgvVehiculos.TabIndex = 1;
+            this.dgvVehiculos.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvVehiculos_CellClick);
+            this.dgvVehiculos.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvVehiculos_CellDoubleClick);
             // 
             // pnlFiltros
             // 
@@ -209,42 +227,6 @@
             this.pnlFiltros.Name = "pnlFiltros";
             this.pnlFiltros.Size = new System.Drawing.Size(757, 45);
             this.pnlFiltros.TabIndex = 0;
-            // 
-            // lblMarca
-            // 
-            this.lblMarca.AutoSize = true;
-            this.lblMarca.BackColor = System.Drawing.Color.Black;
-            this.lblMarca.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMarca.ForeColor = System.Drawing.Color.White;
-            this.lblMarca.Location = new System.Drawing.Point(13, 11);
-            this.lblMarca.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblMarca.Name = "lblMarca";
-            this.lblMarca.Size = new System.Drawing.Size(70, 22);
-            this.lblMarca.TabIndex = 6;
-            this.lblMarca.Text = "Marca:";
-            // 
-            // cmbMarca
-            // 
-            this.cmbMarca.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbMarca.FormattingEnabled = true;
-            this.cmbMarca.Location = new System.Drawing.Point(90, 11);
-            this.cmbMarca.Name = "cmbMarca";
-            this.cmbMarca.Size = new System.Drawing.Size(121, 24);
-            this.cmbMarca.TabIndex = 7;
-            // 
-            // btnFiltrar
-            // 
-            this.btnFiltrar.BackColor = System.Drawing.Color.Black;
-            this.btnFiltrar.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnFiltrar.ForeColor = System.Drawing.Color.White;
-            this.btnFiltrar.Location = new System.Drawing.Point(218, 5);
-            this.btnFiltrar.Margin = new System.Windows.Forms.Padding(4);
-            this.btnFiltrar.Name = "btnFiltrar";
-            this.btnFiltrar.Size = new System.Drawing.Size(106, 34);
-            this.btnFiltrar.TabIndex = 5;
-            this.btnFiltrar.Text = "Filtrar";
-            this.btnFiltrar.UseVisualStyleBackColor = false;
-            this.btnFiltrar.Click += new System.EventHandler(this.btnFiltrar_Click);
             // 
             // btnLimpiar
             // 
@@ -260,22 +242,41 @@
             this.btnLimpiar.UseVisualStyleBackColor = false;
             this.btnLimpiar.Click += new System.EventHandler(this.btnLimpiar_Click);
             // 
-            // dgvVehiculos
+            // btnFiltrar
             // 
-            this.dgvVehiculos.AllowUserToAddRows = false;
-            this.dgvVehiculos.AllowUserToDeleteRows = false;
-            this.dgvVehiculos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvVehiculos.Location = new System.Drawing.Point(14, 100);
-            this.dgvVehiculos.MultiSelect = false;
-            this.dgvVehiculos.Name = "dgvVehiculos";
-            this.dgvVehiculos.ReadOnly = true;
-            this.dgvVehiculos.RowHeadersWidth = 51;
-            this.dgvVehiculos.RowTemplate.Height = 24;
-            this.dgvVehiculos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvVehiculos.Size = new System.Drawing.Size(757, 336);
-            this.dgvVehiculos.TabIndex = 1;
-            this.dgvVehiculos.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvVehiculos_CellClick);
-            this.dgvVehiculos.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvVehiculos_CellDoubleClick);
+            this.btnFiltrar.BackColor = System.Drawing.Color.Black;
+            this.btnFiltrar.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnFiltrar.ForeColor = System.Drawing.Color.White;
+            this.btnFiltrar.Location = new System.Drawing.Point(218, 5);
+            this.btnFiltrar.Margin = new System.Windows.Forms.Padding(4);
+            this.btnFiltrar.Name = "btnFiltrar";
+            this.btnFiltrar.Size = new System.Drawing.Size(106, 34);
+            this.btnFiltrar.TabIndex = 5;
+            this.btnFiltrar.Text = "Filtrar";
+            this.btnFiltrar.UseVisualStyleBackColor = false;
+            this.btnFiltrar.Click += new System.EventHandler(this.btnFiltrar_Click);
+            // 
+            // cmbMarca
+            // 
+            this.cmbMarca.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbMarca.FormattingEnabled = true;
+            this.cmbMarca.Location = new System.Drawing.Point(90, 11);
+            this.cmbMarca.Name = "cmbMarca";
+            this.cmbMarca.Size = new System.Drawing.Size(121, 24);
+            this.cmbMarca.TabIndex = 7;
+            // 
+            // lblMarca
+            // 
+            this.lblMarca.AutoSize = true;
+            this.lblMarca.BackColor = System.Drawing.Color.Black;
+            this.lblMarca.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMarca.ForeColor = System.Drawing.Color.White;
+            this.lblMarca.Location = new System.Drawing.Point(13, 11);
+            this.lblMarca.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblMarca.Name = "lblMarca";
+            this.lblMarca.Size = new System.Drawing.Size(70, 22);
+            this.lblMarca.TabIndex = 6;
+            this.lblMarca.Text = "Marca:";
             // 
             // FrmPrincipalCliente
             // 
@@ -288,7 +289,7 @@
             this.Controls.Add(this.pnlMenu);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.Name = "FrmPrincipalCliente";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -299,9 +300,9 @@
             this.pnlSuperior.ResumeLayout(false);
             this.pnlSuperior.PerformLayout();
             this.pnlContenido.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvVehiculos)).EndInit();
             this.pnlFiltros.ResumeLayout(false);
             this.pnlFiltros.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvVehiculos)).EndInit();
             this.ResumeLayout(false);
 
         }

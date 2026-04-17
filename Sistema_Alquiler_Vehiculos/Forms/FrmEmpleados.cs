@@ -1,0 +1,176 @@
+﻿// ─────────────────────────────────────────────────────────────────────────────
+// Archivo  : FrmEmpleados.cs
+// Capa     : Forms (Presentación)
+// Propósito: Gestión de personal (Vendedores, Administradores y Super Usuarios).
+//            Acceso exclusivo para el Rol de Super Usuario.
+// ─────────────────────────────────────────────────────────────────────────────
+
+using Sistema_Alquiler_Vehiculos.BLL;
+using Sistema_Alquiler_Vehiculos.DAL;
+using System;
+using System.Data;
+using System.Linq;
+using System.Windows.Forms;
+
+namespace Sistema_Alquiler_Vehiculos.Forms
+{
+    public partial class FrmEmpleados : Form
+    {
+        // ─────────────────────────────────────────────────────────────────
+        // Atributos
+        // ─────────────────────────────────────────────────────────────────
+        private readonly UsuarioFacade _usuarioFacade;
+
+        // ─────────────────────────────────────────────────────────────────
+        // Constructor
+        // ─────────────────────────────────────────────────────────────────
+        public FrmEmpleados()
+        {
+            InitializeComponent();
+            _usuarioFacade = new UsuarioFacade();
+        }
+
+        // ─────────────────────────────────────────────────────────────────
+        // Eventos del Formulario
+        // ─────────────────────────────────────────────────────────────────
+        private void FrmEmpleados_Load(object sender, EventArgs e)
+        {
+            CargarRoles();
+            ActualizarDGV();
+            LimpiarFormulario();
+        }
+
+        // ─────────────────────────────────────────────────────────────────
+        // Eventos de Botones y DGV
+        // ─────────────────────────────────────────────────────────────────
+
+        private void btnLimpiar_Click(object sender, EventArgs e)
+        {
+            LimpiarFormulario();
+        }
+
+        private void btnGuardar_Click(object sender, EventArgs e)
+        {
+            // Validaciones básicas
+            if (string.IsNullOrWhiteSpace(txtNombre.Text) || string.IsNullOrWhiteSpace(txtUsuario.Text))
+            {
+                MessageBox.Show("Nombre y Usuario son obligatorios.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Extracción segura del ID (El truco del Replace)
+            int idFinal = 0;
+            if (lblId.Text != "0")
+            {
+                string soloNumero = lblId.Text.Replace("Su número de ID es: ", "");
+                idFinal = int.Parse(soloNumero);
+            }
+
+            // Construcción del objeto
+            var empleado = new Usuarios
+            {
+                UsuarioId = idFinal,
+                Nombre = txtNombre.Text.Trim(),
+                Apellido = txtApellido.Text.Trim(),
+                Cedula = txtCedula.Text.Trim(),
+                Email = txtEmail.Text.Trim(),
+                NombreUsuario = txtUsuario.Text.Trim(),
+                Contrasenia = txtPass.Text,
+                RolId = (int)cmbRol.SelectedValue // ⚠️ ASIGNACIÓN DEL CARGO
+            };
+
+            // Reusamos la lógica de GuardarCliente (funciona igual para empleados)
+            _usuarioFacade.GuardarCliente(empleado, txtTelefono.Text.Trim());
+
+            MessageBox.Show("Empleado gestionado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            ActualizarDGV();
+            LimpiarFormulario();
+        }
+
+        private void dgvEmpleados_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+
+            int id = (int)dgvEmpleados.Rows[e.RowIndex].Cells["UsuarioId"].Value;
+            var emp = _usuarioFacade.ObtenerPorId(id);
+
+            if (emp != null)
+            {
+                // Formato descriptivo del ID
+                lblId.Text = $"Su número de ID es: {emp.UsuarioId}";
+                lblId.Visible = true;
+
+                txtNombre.Text = emp.Nombre;
+                txtApellido.Text = emp.Apellido;
+                txtCedula.Text = emp.Cedula;
+                txtEmail.Text = emp.Email;
+                txtUsuario.Text = emp.NombreUsuario;
+                txtTelefono.Text = _usuarioFacade.ObtenerTelefono(id);
+
+                // Mueve el ComboBox al cargo correcto del empleado seleccionado
+                cmbRol.SelectedValue = emp.RolId;
+
+                // Seguridad UI
+                txtUsuario.ReadOnly = true;
+                txtPass.Enabled = false;
+
+                btnGuardar.Text = "Actualizar Empleado";
+            }
+        }
+
+        // ─────────────────────────────────────────────────────────────────
+        // Métodos de Carga Inicial
+        // ─────────────────────────────────────────────────────────────────
+
+        private void CargarRoles()
+        {
+            // Cargamos solo roles administrativos (Vendedor, Admin, SuperUser)
+            cmbRol.DataSource = _usuarioFacade.ObtenerRolesEmpleados();
+            cmbRol.DisplayMember = "NombreRol";
+            cmbRol.ValueMember = "RolId";
+        }
+
+        private void ActualizarDGV()
+        {
+            var empleados = _usuarioFacade.ObtenerTodosLosEmpleados();
+
+            // Moldeamos los datos para la tabla
+            dgvEmpleados.DataSource = empleados.Select(emp => new {
+                emp.UsuarioId,
+                emp.Cedula,
+                Nombre = emp.Nombre + " " + emp.Apellido,
+                Cargo = emp.Roles.NombreRol, // Nombre visual del cargo
+                emp.NombreUsuario
+            }).ToList();
+
+            dgvEmpleados.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        }
+
+        // ─────────────────────────────────────────────────────────────────
+        // Utilidades
+        // ─────────────────────────────────────────────────────────────────
+
+        private void LimpiarFormulario()
+        {
+            lblId.Text = "0";
+            lblId.Visible = false;
+
+            txtNombre.Clear();
+            txtApellido.Clear();
+            txtCedula.Clear();
+            txtEmail.Clear();
+            txtTelefono.Clear();
+            txtUsuario.Clear();
+            txtPass.Clear();
+
+            if (cmbRol.Items.Count > 0) cmbRol.SelectedIndex = 0;
+
+            txtUsuario.ReadOnly = false;
+            txtPass.Enabled = true;
+
+            btnGuardar.Text = "Guardar Nuevo Empleado";
+            txtNombre.Focus();
+        }
+    }
+}

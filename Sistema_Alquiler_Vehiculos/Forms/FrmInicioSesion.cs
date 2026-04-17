@@ -96,7 +96,7 @@ namespace Sistema_Alquiler_Vehiculos.Forms
             if (usuarioActivo == null)
             {
                 MessageBox.Show(
-                    "Usuario o contrasenia incorrectos.",
+                    "Usuario o contraseña incorrectos o cuenta inactiva.",
                     "Acceso denegado",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
@@ -111,17 +111,20 @@ namespace Sistema_Alquiler_Vehiculos.Forms
             switch (usuarioActivo.RolId)
             {
                 case 1:
+                    // 1 = Cliente (Tiene su propia pantalla independiente)
                     frmPrincipal = new FrmPrincipalCliente(usuarioActivo);
                     break;
                 case 2:
-                    frmPrincipal = new FrmPrincipalVendedor(usuarioActivo);
-                    break;
                 case 3:
+                case 4:
+                    // 2 = Vendedor, 3 = Admin, 4 = SuperUsuario
+                    // Todos usan la MISMA pantalla administrativa.
+                    // El evento "Load" de ese formulario se encargará de ocultar los botones.
                     frmPrincipal = new FrmPrincipalAdministrador(usuarioActivo);
                     break;
-                case 4:
-                    frmPrincipal = new FrmPrincipalSuperUsuario(usuarioActivo);
-                    break;
+                default:
+                    MessageBox.Show("El rol asignado no es válido para entrar al sistema.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
             }
 
             if (frmPrincipal == null) return;

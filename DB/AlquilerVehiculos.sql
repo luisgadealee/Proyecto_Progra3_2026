@@ -5,450 +5,360 @@
 -- AUTOR  : Ingenieria en Sistemas - Proyecto Final - Luis Fernando Gadea Lee
 -- =====================================================================
 
-
 -- =====================================================================
 -- PASO 1: Crear la base de datos
 -- =====================================================================
 
-USE master;
-GO
+use master;
+go
 
--- La idea es buscar la base de datos si existe, y borrarla para volverla a crear
-IF EXISTS (SELECT name FROM sys.databases WHERE name = 'AlquilerVehiculos')
-BEGIN
-    -- Forzar cierre de conexiones activas antes de eliminar
-    ALTER DATABASE AlquilerVehiculos SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
-    DROP DATABASE AlquilerVehiculos;
-END
-GO
+-- la idea es buscar la base de datos si existe, y borrarla para volverla a crear
+if exists (select name from sys.databases where name = 'AlquilerVehiculos')
+begin
+    -- forzar cierre de conexiones activas antes de eliminar
+    alter database AlquilerVehiculos set single_user with rollback immediate;
+    drop database AlquilerVehiculos;
+end
+go
 
-CREATE DATABASE AlquilerVehiculos;
-GO
+create database AlquilerVehiculos;
+go
 
-USE AlquilerVehiculos;
-GO
-
+use AlquilerVehiculos;
+go
 
 -- =====================================================================
 -- PASO 2: Tablas Sub Tablas
--- Se crean primero porque las tablas principales necesitan referencias
+-- se crean primero porque las tablas principales necesitan referencias
 -- =====================================================================
 
 -- ---------------------------------------------------------------------
--- Tabla: Roles
--- Almacena los roles disponibles del sistema.
--- Valores iniciales: Administrador, Cliente, SuperUsuario, Vendedor
+-- tabla: Roles
 -- ---------------------------------------------------------------------
-CREATE TABLE Roles
+create table Roles
 (
-    RolId      INT          NOT NULL IDENTITY(1,1),
-    NombreRol  VARCHAR(50)  NOT NULL,
+    RolId       int         not null identity(1,1),
+    NombreRol   varchar(50) not null,
 
-    CONSTRAINT PK_Roles        PRIMARY KEY (RolId),
-    CONSTRAINT UQ_Roles_Nombre UNIQUE      (NombreRol)
+    constraint pk_Roles        primary key (RolId),
+    constraint uq_Roles_Nombre unique      (NombreRol)
 );
-GO
+go
 
 -- ---------------------------------------------------------------------
--- Tabla: TiposVehiculo
--- Clasifica los vehiculos por categoria.
--- Valores iniciales: Sedan, SUV, Camioneta, Pick-up, Deportivo
+-- tabla: TiposVehiculo
 -- ---------------------------------------------------------------------
-CREATE TABLE TiposVehiculo
+create table TiposVehiculo
 (
-    TipoId      INT          NOT NULL IDENTITY(1,1),
-    NombreTipo  VARCHAR(50)  NOT NULL,
+    TipoId      int         not null identity(1,1),
+    NombreTipo  varchar(50) not null,
 
-    CONSTRAINT PK_TiposVehiculo        PRIMARY KEY (TipoId),
-    CONSTRAINT UQ_TiposVehiculo_Nombre UNIQUE      (NombreTipo)
+    constraint pk_TiposVehiculo        primary key (TipoId),
+    constraint uq_TiposVehiculo_Nombre unique      (NombreTipo)
 );
-GO
+go
 
 -- ---------------------------------------------------------------------
--- Tabla: EstadosVehiculo
--- Controla la disponibilidad de cada vehiculo.
--- Valores iniciales: Disponible, Alquilado, Mantenimiento
+-- tabla: EstadosVehiculo
 -- ---------------------------------------------------------------------
-CREATE TABLE EstadosVehiculo
+create table EstadosVehiculo
 (
-    EstadoId      INT          NOT NULL IDENTITY(1,1),
-    NombreEstado  VARCHAR(30)  NOT NULL,
+    EstadoId      int         not null identity(1,1),
+    NombreEstado  varchar(30) not null,
 
-    CONSTRAINT PK_EstadosVehiculo        PRIMARY KEY (EstadoId),
-    CONSTRAINT UQ_EstadosVehiculo_Nombre UNIQUE      (NombreEstado)
+    constraint pk_EstadosVehiculo        primary key (EstadoId),
+    constraint uq_EstadosVehiculo_Nombre unique      (NombreEstado)
 );
-GO
+go
 
 -- ---------------------------------------------------------------------
--- Tabla: TiposTarifa
--- Define los tipos de tarifa que puede tener un vehiculo.
--- Valores iniciales: Por Dia, Semanal, Quince Dias, mes
+-- tabla: TiposTarifa
 -- ---------------------------------------------------------------------
-CREATE TABLE TiposTarifa
+create table TiposTarifa
 (
-    TipoTarifaId  INT          NOT NULL IDENTITY(1,1),
-    NombreTarifa  VARCHAR(30)  NOT NULL,
+    TipoTarifaId  int         not null identity(1,1),
+    NombreTarifa  varchar(30) not null,
 
-    CONSTRAINT PK_TiposTarifa        PRIMARY KEY (TipoTarifaId),
-    CONSTRAINT UQ_TiposTarifa_Nombre UNIQUE      (NombreTarifa)
+    constraint pk_TiposTarifa        primary key (TipoTarifaId),
+    constraint uq_TiposTarifa_Nombre unique      (NombreTarifa)
 );
-GO
+go
 
 -- ---------------------------------------------------------------------
--- Tabla: EstadosAlquiler
--- Controla el ciclo de vida de un alquiler.
--- Valores iniciales: Pendiente, Aprobado, Rechazado, Cerrado
+-- tabla: EstadosAlquiler
 -- ---------------------------------------------------------------------
-CREATE TABLE EstadosAlquiler
+create table EstadosAlquiler
 (
-    EstadoId      INT          NOT NULL IDENTITY(1,1),
-    NombreEstado  VARCHAR(30)  NOT NULL,
+    EstadoId      int         not null identity(1,1),
+    NombreEstado  varchar(30) not null,
 
-    CONSTRAINT PK_EstadosAlquiler        PRIMARY KEY (EstadoId),
-    CONSTRAINT UQ_EstadosAlquiler_Nombre UNIQUE      (NombreEstado)
+    constraint pk_EstadosAlquiler        primary key (EstadoId),
+    constraint uq_EstadosAlquiler_Nombre unique      (NombreEstado)
 );
-GO
-
+go
 
 -- =====================================================================
 -- PASO 3: Tablas principales
 -- =====================================================================
 
 -- ---------------------------------------------------------------------
--- Tabla: Usuarios
--- Almacena clientes y administradores del sistema.
--- El campo Contrasenia guarda el hash, nunca texto plano.
--- El campo Activo permite desactivar usuarios sin eliminarlos.
+-- tabla: Usuarios
 -- ---------------------------------------------------------------------
-CREATE TABLE Usuarios
+create table Usuarios
 (
-    UsuarioId      INT           NOT NULL IDENTITY(1,1),
-    Nombre         VARCHAR(100)  NOT NULL,
-    Apellido       VARCHAR(100)  NOT NULL,
-    Cedula         VARCHAR(20)   NOT NULL,
-    Email          VARCHAR(150)  NOT NULL,
-    NombreUsuario  VARCHAR(50)   NOT NULL,
-    Contrasenia    VARCHAR(255)  NOT NULL,
-    RolId          INT           NOT NULL,
-    FechaRegistro  DATETIME      NOT NULL DEFAULT GETDATE(),
-    Activo         BIT           NOT NULL DEFAULT 1,
+    UsuarioId      int           not null identity(1,1),
+    Nombre         varchar(100)  not null,
+    Apellido       varchar(100)  not null,
+    Cedula         varchar(20)   not null,
+    Email          varchar(150)  not null,
+    NombreUsuario  varchar(50)   not null,
+    Contrasenia    varchar(255)  not null,
+    RolId          int           not null,
+    FechaRegistro  datetime      not null default getdate(),
+    Activo         bit           not null default 1,
 
-    CONSTRAINT PK_Usuarios               PRIMARY KEY (UsuarioId),
-    CONSTRAINT UQ_Usuarios_Cedula        UNIQUE      (Cedula),
-    CONSTRAINT UQ_Usuarios_Email         UNIQUE      (Email),
-    CONSTRAINT UQ_Usuarios_NombreUsuario UNIQUE      (NombreUsuario),
-    CONSTRAINT FK_Usuarios_Roles         FOREIGN KEY (RolId)
-        REFERENCES Roles(RolId)
+    constraint pk_Usuarios                primary key (UsuarioId),
+    constraint uq_Usuarios_Cedula         unique      (Cedula),
+    constraint uq_Usuarios_Email          unique      (Email),
+    constraint uq_Usuarios_NombreUsuario  unique      (NombreUsuario),
+    constraint fk_Usuarios_Roles          foreign key (RolId) 
+        references Roles(RolId)
 );
-GO
+go
 
 -- ---------------------------------------------------------------------
--- Tabla: Telefonos
--- Registro los telefonos de los usuarios.
+-- tabla: Telefonos
 -- ---------------------------------------------------------------------
-CREATE TABLE Telefonos
+create table Telefonos
 (
-    TelefonoId  INT          NOT NULL IDENTITY(1,1),
-    UsuarioId   INT          NOT NULL,
-    Numero      VARCHAR(20)  NOT NULL,
+    TelefonoId  int         not null identity(1,1),
+    UsuarioId   int         not null,
+    Numero      varchar(20) not null,
 
-    CONSTRAINT PK_Telefonos          PRIMARY KEY (TelefonoId),
-    CONSTRAINT FK_Telefonos_Usuarios FOREIGN KEY (UsuarioId)
-        REFERENCES Usuarios(UsuarioId)
+    constraint pk_Telefonos          primary key (TelefonoId),
+    constraint fk_Telefonos_Usuarios foreign key (UsuarioId) 
+        references Usuarios(UsuarioId)
 );
-GO
+go
 
 -- ---------------------------------------------------------------------
--- Tabla: Vehiculos
--- Registro del inventario de vehiculos de la empresa.
--- El campo Activo permite desactivar vehiculos sin eliminarlos.
+-- tabla: Vehiculos
 -- ---------------------------------------------------------------------
-CREATE TABLE Vehiculos
+create table Vehiculos
 (
-    VehiculoId  INT          NOT NULL IDENTITY(1,1),
-    Placa       VARCHAR(20)  NOT NULL,
-    Marca       VARCHAR(50)  NOT NULL,
-    Modelo      VARCHAR(50)  NOT NULL,
-    Anio        INT          NOT NULL,
-    TipoId      INT          NOT NULL,
-    EstadoId    INT          NOT NULL,
-    Activo      BIT          NOT NULL DEFAULT 1,
+    VehiculoId  int         not null identity(1,1),
+    Placa       varchar(20) not null,
+    Marca       varchar(50) not null,
+    Modelo      varchar(50) not null,
+    Anio        int         not null,
+    TipoId      int         not null,
+    EstadoId    int         not null,
+    Activo      bit         not null default 1,
 
-    CONSTRAINT PK_Vehiculos        PRIMARY KEY (VehiculoId),
-    CONSTRAINT UQ_Vehiculos_Placa  UNIQUE      (Placa),
-    CONSTRAINT FK_Vehiculos_Tipo   FOREIGN KEY (TipoId)
-        REFERENCES TiposVehiculo(TipoId),
-    CONSTRAINT FK_Vehiculos_Estado FOREIGN KEY (EstadoId)
-        REFERENCES EstadosVehiculo(EstadoId)
+    constraint pk_Vehiculos        primary key (VehiculoId),
+    constraint uq_Vehiculos_Placa  unique      (Placa),
+    constraint fk_Vehiculos_Tipo   foreign key (TipoId) 
+        references TiposVehiculo(TipoId),
+    constraint fk_Vehiculos_Estado foreign key (EstadoId) 
+        references EstadosVehiculo(EstadoId)
 );
-GO
+go
 
 -- ---------------------------------------------------------------------
--- Tabla: Tarifas
--- Cada vehiculo puede tener multiples tarifas segun el tipo.
+-- tabla: Tarifas
 -- ---------------------------------------------------------------------
-CREATE TABLE Tarifas
+create table Tarifas
 (
-    TarifaId      INT            NOT NULL IDENTITY(1,1),
-    VehiculoId    INT            NOT NULL,
-    TipoTarifaId  INT            NOT NULL,
-    Monto         DECIMAL(10,2)  NOT NULL,
+    TarifaId      int            not null identity(1,1),
+    VehiculoId    int            not null,
+    TipoTarifaId  int            not null,
+    Monto         decimal(10,2)  not null,
 
-    CONSTRAINT PK_Tarifas              PRIMARY KEY (TarifaId),
-    CONSTRAINT UQ_Tarifas_VehiculoTipo UNIQUE      (VehiculoId, TipoTarifaId),
-    CONSTRAINT FK_Tarifas_Vehiculos    FOREIGN KEY (VehiculoId)
-        REFERENCES Vehiculos(VehiculoId),
-    CONSTRAINT FK_Tarifas_TiposTarifa  FOREIGN KEY (TipoTarifaId)
-        REFERENCES TiposTarifa(TipoTarifaId)
+    constraint pk_Tarifas                  primary key (TarifaId),
+    constraint uq_Tarifas_VehiculoTipo     unique      (VehiculoId, TipoTarifaId),
+    constraint fk_Tarifas_Vehiculos        foreign key (VehiculoId) 
+        references Vehiculos(VehiculoId),
+    constraint fk_Tarifas_TiposTarifa      foreign key (TipoTarifaId) 
+        references TiposTarifa(TipoTarifaId)
 );
-GO
+go
 
 -- ---------------------------------------------------------------------
--- Tabla: Alquileres
--- Registro central del sistema. Vincula usuario, vehiculo y tarifa.
--- FechaDevolucion es NULL hasta que el administrador registre
--- la devolucion del vehiculo.
+-- tabla: Alquileres
 -- ---------------------------------------------------------------------
-CREATE TABLE Alquileres
+create table Alquileres
 (
-    AlquilerId       INT            NOT NULL IDENTITY(1,1),
-    UsuarioId        INT            NOT NULL,
-    VehiculoId       INT            NOT NULL,
-    TarifaId         INT            NOT NULL,
-    EstadoId         INT            NOT NULL,
-    FechaInicio      DATETIME       NOT NULL,
-    FechaFinPactada  DATETIME       NOT NULL,
-    FechaDevolucion  DATETIME           NULL,
-    TieneDanios      BIT            NOT NULL DEFAULT 0,
-    CostoDanios      DECIMAL(10,2)  NOT NULL DEFAULT 0,
-    MultaRetraso     DECIMAL(10,2)  NOT NULL DEFAULT 0,
+    AlquilerId       int            not null identity(1,1),
+    UsuarioId        int            not null,
+    VehiculoId       int            not null,
+    TarifaId         int            not null,
+    EstadoId         int            not null,
+    UsuarioAdminId   int                null,
+    FechaInicio      datetime       not null,
+    FechaFinPactada  datetime       not null,
+    FechaDevolucion  datetime           null,
+    TieneDanios      bit            not null default 0,
+    CostoDanios      decimal(10,2)  not null default 0,
+    MultaRetraso     decimal(10,2)  not null default 0,
 
-    CONSTRAINT PK_Alquileres           PRIMARY KEY (AlquilerId),
-    CONSTRAINT FK_Alquileres_Usuarios  FOREIGN KEY (UsuarioId)
-        REFERENCES Usuarios(UsuarioId),
-    CONSTRAINT FK_Alquileres_Vehiculos FOREIGN KEY (VehiculoId)
-        REFERENCES Vehiculos(VehiculoId),
-    CONSTRAINT FK_Alquileres_Tarifas   FOREIGN KEY (TarifaId)
-        REFERENCES Tarifas(TarifaId),
-    CONSTRAINT FK_Alquileres_Estados   FOREIGN KEY (EstadoId)
-        REFERENCES EstadosAlquiler(EstadoId)
+    constraint pk_Alquileres          primary key (AlquilerId),
+    constraint fk_Alquileres_Usuarios foreign key (UsuarioId) 
+        references Usuarios(UsuarioId),
+    constraint fk_Alquileres_Admin    foreign key (UsuarioAdminId) 
+        references Usuarios(UsuarioId),
+    constraint fk_Alquileres_Vehiculos foreign key (VehiculoId) 
+        references Vehiculos(VehiculoId),
+    constraint fk_Alquileres_Tarifas   foreign key (TarifaId) 
+        references Tarifas(TarifaId),
+    constraint fk_Alquileres_Estados   foreign key (EstadoId) 
+        references EstadosAlquiler(EstadoId)
 );
-GO
+go
 
 -- ---------------------------------------------------------------------
--- Tabla: Pagos
--- Registra el pago generado al cerrar un alquiler.
--- EstadoPago: 'Pendiente' cuando se genera, 'Pagado' al confirmar.
+-- tabla: Pagos
 -- ---------------------------------------------------------------------
-CREATE TABLE Pagos
+create table Pagos
 (
-    PagoId      INT            NOT NULL IDENTITY(1,1),
-    AlquilerId  INT            NOT NULL,
-    Monto       DECIMAL(10,2)  NOT NULL,
-    FechaPago   DATETIME       NOT NULL DEFAULT GETDATE(),
-    EstadoPago  VARCHAR(20)    NOT NULL DEFAULT 'Pendiente',
+    PagoId      int            not null identity(1,1),
+    AlquilerId  int            not null,
+    Monto       decimal(10,2)  not null,
+    FechaPago   datetime       not null default getdate(),
+    EstadoPago  varchar(20)    not null default 'Pendiente',
 
-    CONSTRAINT PK_Pagos            PRIMARY KEY (PagoId),
-    CONSTRAINT FK_Pagos_Alquileres FOREIGN KEY (AlquilerId)
-        REFERENCES Alquileres(AlquilerId)
+    constraint pk_Pagos             primary key (PagoId),
+    constraint fk_Pagos_Alquileres  foreign key (AlquilerId) 
+        references Alquileres(AlquilerId)
 );
-GO
-
+go
 
 -- =====================================================================
 -- PASO 4: Datos de sub Tablas
--- Valores fijos que el sistema necesita para funcionar.
--- Estos NO cambian durante el uso normal del sistema.
 -- =====================================================================
 
-INSERT INTO Roles (NombreRol) VALUES
+insert into Roles (NombreRol) values
     ('Cliente'),
     ('Vendedor'),
     ('Administrador'),
     ('SuperUsuario');
 
-INSERT INTO TiposVehiculo (NombreTipo) VALUES
+insert into TiposVehiculo (NombreTipo) values
     ('Sedan'),
     ('SUV'),
     ('Camioneta'),
     ('Pick-up'),
     ('Deportivo');
 
-INSERT INTO EstadosVehiculo (NombreEstado) VALUES
+insert into EstadosVehiculo (NombreEstado) values
     ('Disponible'),
     ('Alquilado'),
     ('Mantenimiento');
 
-INSERT INTO TiposTarifa (NombreTarifa) VALUES
+insert into TiposTarifa (NombreTarifa) values
     ('Diaria'),
     ('Semanal'),
     ('FinDeSemana'),
     ('Quince Dias'),
     ('Mes');
 
-INSERT INTO EstadosAlquiler (NombreEstado) VALUES
+insert into EstadosAlquiler (NombreEstado) values
     ('Pendiente'),
     ('Aprobado'),
     ('Rechazado'),
     ('Cerrado');
-GO
-
+go
 
 -- =====================================================================
 -- PASO 5: Datos de prueba
 -- =====================================================================
 
-INSERT INTO Usuarios (Nombre, Apellido, Cedula, Email, NombreUsuario, Contrasenia, RolId) VALUES
+insert into Usuarios (Nombre, Apellido, Cedula, Email, NombreUsuario, Contrasenia, RolId) values
     ('Carlos',  'Mendoza',   '101110111', 'carlos.admin@alquiler.com',   'carlos.admin',   'Admin123!',    3),
     ('Ana',     'Rodriguez', '202220222', 'ana.cliente@gmail.com',       'ana.rodriguez',  'Cliente123!',  1),
     ('Luis',    'Perez',     '303330333', 'luis.cliente@gmail.com',      'luis.perez',     'Cliente123!',  1),
     ('Maria',   'Gonzalez',  '404440444', 'maria.cliente@gmail.com',     'maria.gonzalez', 'Cliente123!',  1),
     ('Pedro',   'Vargas',    '505550555', 'pedro.vendedor@alquiler.com', 'pedro.vendedor', 'Vendedor123!', 2),
     ('Roberto', 'Super',     '606660666', 'roberto.super@alquiler.com',  'roberto.super',  'Super123!',    4),
-    ('Luis', 'Gadea',     '117260789', 'lgadea@gmail.com',  'luis.super',  'Luis123!',    4);
-GO
+    ('Luis',    'Gadea',     '117260789', 'lgadea@gmail.com',            'luis.super',     'Luis123!',     4);
+go
 
-INSERT INTO Telefonos (UsuarioId, Numero) VALUES
+insert into Telefonos (UsuarioId, Numero) values
     (1, '8888-1111'),
     (2, '8888-2222'),
     (2, '7777-2222'),
     (3, '8888-3333'),
     (5, '8888-5555');
-GO
+go
 
-INSERT INTO Vehiculos (Placa, Marca, Modelo, Anio, TipoId, EstadoId) VALUES
+insert into Vehiculos (Placa, Marca, Modelo, Anio, TipoId, EstadoId) values
     ('ABC-123', 'Toyota',    'Corolla', 2022, 1, 1),
     ('DEF-456', 'Honda',     'CR-V',    2023, 2, 1),
     ('GHI-789', 'Ford',      'F-150',   2021, 4, 1),
     ('JKL-012', 'Chevrolet', 'Tahoe',   2022, 2, 2),
     ('MNO-345', 'Toyota',    'Hilux',   2023, 3, 1),
     ('PQR-678', 'Mazda',     'MX-5',    2023, 5, 3);
-GO
+go
 
-INSERT INTO Tarifas (VehiculoId, TipoTarifaId, Monto) VALUES
-    -- Toyota Corolla
-    (1, 1,   45.00),   -- Diaria
-    (1, 2,  280.00),   -- Semanal
-    (1, 3,   90.00),   -- FinDeSemana
-    (1, 4,  500.00),   -- Quince Dias
-    (1, 5,  900.00),   -- Mes
-    -- Honda CR-V
-    (2, 1,   65.00),
-    (2, 2,  400.00),
-    (2, 3,  130.00),
-    (2, 4,  750.00),
-    (2, 5, 1300.00),
-    -- Ford F-150
-    (3, 1,   80.00),
-    (3, 2,  500.00),
-    (3, 4,  900.00),
-    (3, 5, 1600.00),
-    -- Chevrolet Tahoe
-    (4, 1,   90.00),
-    (4, 2,  560.00),
-    (4, 3,  180.00),
-    (4, 4, 1000.00),
-    (4, 5, 1800.00),
-    -- Toyota Hilux
-    (5, 1,   75.00),
-    (5, 2,  460.00),
-    (5, 4,  850.00),
-    (5, 5, 1500.00),
-    -- Mazda MX-5
-    (6, 1,   95.00),
-    (6, 3,  190.00),
-    (6, 5, 2000.00);
-GO
+insert into Tarifas (VehiculoId, TipoTarifaId, Monto) values
+    (1, 1,  45.00), (1, 2, 280.00), (1, 3,  90.00), (1, 4, 500.00), (1, 5, 900.00),
+    (2, 1,  65.00), (2, 2, 400.00), (2, 3, 130.00), (2, 4, 750.00), (2, 5, 1300.00),
+    (3, 1,  80.00), (3, 2, 500.00), (3, 4, 900.00), (3, 5, 1600.00),
+    (4, 1,  90.00), (4, 2, 560.00), (4, 3, 180.00), (4, 4, 1000.00), (4, 5, 1800.00),
+    (5, 1,  75.00), (5, 2, 460.00), (5, 4, 850.00), (5, 5, 1500.00),
+    (6, 1,  95.00), (6, 3, 190.00), (6, 5, 2000.00);
+go
 
-INSERT INTO Alquileres
-    (UsuarioId, VehiculoId, TarifaId, EstadoId, FechaInicio, FechaFinPactada, FechaDevolucion, TieneDanios, CostoDanios, MultaRetraso)
-VALUES
-    (2, 1, 1, 4, '2026-01-10', '2026-01-15', '2026-01-15', 0, 0.00,  0.00),
-    (3, 4, 9, 2, '2026-02-20', '2026-03-01',  NULL,         0, 0.00,  0.00),
-    (4, 2, 4, 1, '2026-03-05', '2026-03-10',  NULL,         0, 0.00,  0.00),
-    (2, 3, 7, 4, '2026-01-20', '2026-01-25', '2026-01-28', 0, 0.00, 75.00);
-GO
+-- Insertamos con UsuarioAdminId en null para el pendiente, y con valor 1 (Carlos Admin) para los procesados
+insert into Alquileres
+    (UsuarioId, VehiculoId, TarifaId, EstadoId, UsuarioAdminId, FechaInicio, FechaFinPactada, FechaDevolucion, TieneDanios, CostoDanios, MultaRetraso)
+values
+    (2, 1, 1, 4, 1,    '2026-01-10', '2026-01-15', '2026-01-15', 0, 0.00,  0.00),
+    (3, 4, 9, 2, 1,    '2026-02-20', '2026-03-01',  null,        0, 0.00,  0.00),
+    (4, 2, 4, 1, null, '2026-03-05', '2026-03-10',  null,        0, 0.00,  0.00),
+    (2, 3, 7, 4, 1,    '2026-01-20', '2026-01-25', '2026-01-28', 0, 0.00, 75.00);
+go
 
-INSERT INTO Pagos (AlquilerId, Monto, FechaPago, EstadoPago) VALUES
+insert into Pagos (AlquilerId, Monto, FechaPago, EstadoPago) values
     (1, 225.00, '2026-01-15', 'Pagado'),
     (4, 475.00, '2026-01-28', 'Pagado');
-GO
-
+go
 
 -- =====================================================================
 -- PASO 6: Verificacion
 -- =====================================================================
 
-SELECT TABLE_NAME
-FROM INFORMATION_SCHEMA.TABLES
-WHERE TABLE_TYPE = 'BASE TABLE'
-ORDER BY TABLE_NAME;
-
-SELECT u.NombreUsuario, u.Nombre, u.Apellido, u.Cedula, r.NombreRol
-FROM Usuarios u
-INNER JOIN Roles r ON u.RolId = r.RolId;
-
-SELECT u.Nombre, u.Apellido, t.Numero
-FROM Telefonos t
-INNER JOIN Usuarios u ON t.UsuarioId = u.UsuarioId;
-
-SELECT v.Placa, v.Marca, v.Modelo, v.Anio,
-       tp.NombreTipo   AS Tipo,
-       ev.NombreEstado AS Estado
-FROM Vehiculos v
-INNER JOIN TiposVehiculo   tp ON v.TipoId   = tp.TipoId
-INNER JOIN EstadosVehiculo ev ON v.EstadoId = ev.EstadoId;
-
-SELECT a.AlquilerId,
-       u.NombreUsuario,
-       v.Placa,
-       ea.NombreEstado AS EstadoAlquiler,
-       a.FechaInicio,
-       a.FechaFinPactada,
-       a.FechaDevolucion
-FROM Alquileres a
-INNER JOIN Usuarios        u  ON a.UsuarioId  = u.UsuarioId
-INNER JOIN Vehiculos       v  ON a.VehiculoId = v.VehiculoId
-INNER JOIN EstadosAlquiler ea ON a.EstadoId   = ea.EstadoId;
-GO
-
+select table_name
+from information_schema.tables
+where table_type = 'BASE TABLE'
+order by table_name;
+go
 
 -- =====================================================================
 -- PASO 7: Crear usuario de SQL Server para la aplicacion
 -- =====================================================================
 
-USE master;
-GO
+use master;
+go
 
-IF EXISTS (SELECT name FROM sys.server_principals WHERE name = 'usuario12')
-    DROP LOGIN usuario12;
-GO
+if exists (select name from sys.server_principals where name = 'usuario12')
+    drop login usuario12;
+go
 
-CREATE LOGIN usuario12
-    WITH PASSWORD    = 'Alquiler2026!',
-         CHECK_POLICY = OFF;
-GO
+create login usuario12
+    with password     = 'Alquiler2026!',
+         check_policy = off;
+go
 
-USE AlquilerVehiculos;
-GO
+use AlquilerVehiculos;
+go
 
-IF EXISTS (SELECT name FROM sys.database_principals WHERE name = 'usuario12')
-    DROP USER usuario12;
-GO
+if exists (select name from sys.database_principals where name = 'usuario12')
+    drop user usuario12;
+go
 
-CREATE USER usuario12 FOR LOGIN usuario12;
-GO
+create user usuario12 for login usuario12;
+go
 
-ALTER ROLE db_datareader ADD MEMBER usuario12;
-ALTER ROLE db_datawriter ADD MEMBER usuario12;
-GO
-
-SELECT
-    dp.name       AS Usuario,
-    dp.type_desc  AS TipoUsuario,
-    r.name        AS Rol
-FROM sys.database_role_members rm
-INNER JOIN sys.database_principals dp ON rm.member_principal_id = dp.principal_id
-INNER JOIN sys.database_principals r  ON rm.role_principal_id   = r.principal_id
-WHERE dp.name = 'usuario12';
-GO
+alter role db_datareader add member usuario12;
+alter role db_datawriter add member usuario12;
+go

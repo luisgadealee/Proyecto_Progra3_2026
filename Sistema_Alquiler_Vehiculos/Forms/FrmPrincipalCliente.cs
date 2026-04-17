@@ -86,9 +86,11 @@ namespace Sistema_Alquiler_Vehiculos.Forms
         // Abre el formulario de perfil del cliente para ver y editar su información personal.
         private void btnPerfil_Click(object sender, EventArgs e)
         {
-            // Por implementar
-            MessageBox.Show("Modulo de perfil proximamente.", "Info",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            var frm = new FrmPerfil(_usuarioActivo);
+            frm.ShowDialog();
+
+            // Se actualiza el label de bienvenida por si el usuario cambió su nombre
+            lblBienvenida.Text = $"Bienvenido, {_usuarioActivo.Nombre} {_usuarioActivo.Apellido}";
         }
 
         // Cierra la sesión y vuelve al formulario de inicio de sesión.
@@ -309,7 +311,21 @@ namespace Sistema_Alquiler_Vehiculos.Forms
         // Abre el formulario de alquiler para el vehículo seleccionado.
         private void AbrirAlquiler()
         {
+            // Valida si se selecciono algo.
             if (dgvVehiculos.SelectedRows.Count == 0) return;
+
+            // Valida si el cliente tiene deudas pendientes
+            var pagosPendientes = _pagoFacade.ObtenerPendientesPorCliente(_usuarioActivo.UsuarioId);
+            if (pagosPendientes.Count > 0)
+            {
+                MessageBox.Show(
+                    "No puedes solicitar un nuevo alquiler porque tienes pagos pendientes.\n" +
+                    "Por favor, regulariza tu cuenta primero.",
+                    "Alquiler Bloqueado",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return; // Bloquea el acceso al formulario
+            }
 
             // Obtiene el ID del vehículo seleccionado
             int vehiculoId = Convert.ToInt32(dgvVehiculos.SelectedRows[0].Cells["VehiculoId"].Value);

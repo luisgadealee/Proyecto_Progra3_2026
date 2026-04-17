@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="BLL\AlquilerFacade.cs" />
     <Compile Include="BLL\PagoFacade.cs" />
+    <Compile Include="BLL\ReporteFacade.cs" />
     <Compile Include="BLL\TarifaComboItem.cs" />
     <Compile Include="BLL\UsuarioFacade.cs" />
     <Compile Include="BLL\VehiculoFacade.cs" />
@@ -113,17 +114,29 @@
     <Compile Include="DAL\Vehiculos.cs">
       <DependentUpon>AlquilerVehiculosModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FrmClientes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmClientes.Designer.cs">
+      <DependentUpon>FrmClientes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmEmpleados.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmEmpleados.Designer.cs">
+      <DependentUpon>FrmEmpleados.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FrmInicioSesion.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\FrmInicioSesion.Designer.cs">
       <DependentUpon>FrmInicioSesion.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FrmMain.cs">
+    <Compile Include="Forms\FrmPerfil.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FrmMain.Designer.cs">
-      <DependentUpon>FrmMain.cs</DependentUpon>
+    <Compile Include="Forms\FrmPerfil.Designer.cs">
+      <DependentUpon>FrmPerfil.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FrmPrincipalAdministrador.cs">
       <SubType>Form</SubType>
@@ -155,19 +168,43 @@
     <Compile Include="Forms\FrmRegistrarAlquiler.Designer.cs">
       <DependentUpon>FrmRegistrarAlquiler.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FrmRegistrarDevolucion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmRegistrarDevolucion.Designer.cs">
+      <DependentUpon>FrmRegistrarDevolucion.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FrmRegistro.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\FrmRegistro.Designer.cs">
       <DependentUpon>FrmRegistro.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FrmReportes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmReportes.Designer.cs">
+      <DependentUpon>FrmReportes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmVehiculos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmVehiculos.Designer.cs">
+      <DependentUpon>FrmVehiculos.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\FrmClientes.resx">
+      <DependentUpon>FrmClientes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmEmpleados.resx">
+      <DependentUpon>FrmEmpleados.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmInicioSesion.resx">
       <DependentUpon>FrmInicioSesion.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FrmMain.resx">
-      <DependentUpon>FrmMain.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FrmPerfil.resx">
+      <DependentUpon>FrmPerfil.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmPrincipalAdministrador.resx">
       <DependentUpon>FrmPrincipalAdministrador.cs</DependentUpon>
@@ -184,8 +221,17 @@
     <EmbeddedResource Include="Forms\FrmRegistrarAlquiler.resx">
       <DependentUpon>FrmRegistrarAlquiler.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmRegistrarDevolucion.resx">
+      <DependentUpon>FrmRegistrarDevolucion.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmRegistro.resx">
       <DependentUpon>FrmRegistro.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmReportes.resx">
+      <DependentUpon>FrmReportes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmVehiculos.resx">
+      <DependentUpon>FrmVehiculos.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

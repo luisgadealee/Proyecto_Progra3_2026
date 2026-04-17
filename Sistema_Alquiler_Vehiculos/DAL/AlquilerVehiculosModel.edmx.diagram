@@ -27,6 +27,7 @@
         <AssociationConnector Association="AlquilerVehiculosModel.FK_Tarifas_Vehiculos" ManuallyRouted="false" />
         <AssociationConnector Association="AlquilerVehiculosModel.FK_Telefonos_Usuarios" ManuallyRouted="false" />
         <AssociationConnector Association="AlquilerVehiculosModel.FK_Vehiculos_Tipo" ManuallyRouted="false" />
+        <AssociationConnector Association="AlquilerVehiculosModel.fk_Alquileres_Admin" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

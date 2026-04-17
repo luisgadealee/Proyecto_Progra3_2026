@@ -10,6 +10,7 @@ using Sistema_Alquiler_Vehiculos.DAL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data.Entity;
 
 namespace Sistema_Alquiler_Vehiculos.BLL
 {
@@ -42,8 +43,11 @@ namespace Sistema_Alquiler_Vehiculos.BLL
         public List<Alquileres> ObtenerPorCliente(int usuarioId)
         {
             return _db.Alquileres
-                      .Where(a => a.UsuarioId == usuarioId)
-                      .ToList();
+              .Include(a => a.Vehiculos)
+              .Include(a => a.EstadosAlquiler)
+              .Include(a => a.Tarifas)
+              .Where(a => a.UsuarioId == usuarioId)
+              .ToList();
         }
 
         // Obtiene los alquileres activos de un cliente.
@@ -51,8 +55,11 @@ namespace Sistema_Alquiler_Vehiculos.BLL
         public List<Alquileres> ObtenerActivosPorCliente(int usuarioId)
         {
             return _db.Alquileres
-                      .Where(a => a.UsuarioId == usuarioId && a.EstadoId == 2)
-                      .ToList();
+              .Include(a => a.Vehiculos)
+              .Include(a => a.EstadosAlquiler)
+              .Include(a => a.Tarifas)
+              .Where(a => a.UsuarioId == usuarioId && a.EstadoId == 2)
+              .ToList();
         }
 
         // Registra un nuevo alquiler en la base de datos.
@@ -83,6 +90,152 @@ namespace Sistema_Alquiler_Vehiculos.BLL
         {
             return _db.Tarifas
                       .Where(t => t.VehiculoId == vehiculoId)
+                      .ToList();
+        }
+
+        // ─────────────────────────────────────────────────────────────────
+        // Métodos para el Administrador
+        // ─────────────────────────────────────────────────────────────────
+
+        // Obtiene todos los alquileres en estado "Pendiente" (EstadoId = 1)
+        // incluyendo los datos del cliente y el vehículo.
+        public List<Alquileres> ObtenerSolicitudesPendientes()
+        {
+            return _db.Alquileres
+                      .Include(a => a.Usuarios)
+                      .Include(a => a.Vehiculos)
+                      .Include(a => a.EstadosAlquiler)
+                      .Where(a => a.EstadoId == 1)
+                      .ToList();
+        }
+
+        // Aprueba un alquiler (Estado 2) y marca el vehículo como Alquilado (Estado 2).
+        public void AprobarAlquiler(int alquilerId, int adminId)
+        {
+            var alquiler = _db.Alquileres.Find(alquilerId);
+            if (alquiler == null) return;
+
+            alquiler.EstadoId = 2; // 2 = Aprobado
+            alquiler.UsuarioAdminId = adminId; // Guarda quién lo aprobó
+
+            var vehiculo = _db.Vehiculos.Find(alquiler.VehiculoId);
+            if (vehiculo != null) vehiculo.EstadoId = 2; // Vehículo Alquilado
+
+            _db.SaveChanges();
+        }
+
+        // Rechaza un alquiler (Estado 3). El vehículo permanece Disponible.
+        public void RechazarAlquiler(int alquilerId)
+        {
+            var alquiler = _db.Alquileres.Find(alquilerId);
+            if (alquiler == null) return;
+
+            alquiler.EstadoId = 3; // 3 = Rechazado
+            _db.SaveChanges();
+        }
+
+        // Busca un alquiler específico por su ID incluyendo los datos del cliente y vehículo
+        public Alquileres ObtenerPorId(int alquilerId)
+        {
+            return _db.Alquileres
+                      .Include(a => a.Usuarios)
+                      .Include(a => a.Vehiculos)
+                      .Include(a => a.Tarifas)
+                      .FirstOrDefault(a => a.AlquilerId == alquilerId);
+        }
+
+        // Devuelve el nombre de usuario del administrador dado su ID
+        public string ObtenerNombreAdmin(int adminId)
+        {
+            var admin = _db.Usuarios.Find(adminId);
+            return admin != null ? admin.NombreUsuario : "Desconocido";
+        }
+
+        // ─────────────────────────────────────────────────────────────────
+        // Métodos de Devolución
+        // ─────────────────────────────────────────────────────────────────
+
+        // Obtiene los alquileres que ya fueron aprobados y están en curso (EstadoId = 2)
+        public List<Alquileres> ObtenerAlquileresActivos()
+        {
+            return _db.Alquileres
+                      .Include(a => a.Usuarios)
+                      .Include(a => a.Vehiculos)
+                      .Include(a => a.Tarifas)
+                      .Where(a => a.EstadoId == 2)
+                      .ToList();
+        }
+
+        // Procesa la entrega del vehículo, calcula multas y genera el cobro final
+        public void RegistrarDevolucion(int alquilerId, DateTime fechaDevolucion, bool tieneDanios, decimal costoDanios)
+        {
+            var alquiler = _db.Alquileres.Include(a => a.Tarifas).FirstOrDefault(a => a.AlquilerId == alquilerId);
+            if (alquiler == null) return;
+
+            // Calculamos los días de atraso
+            int diasRetraso = (fechaDevolucion.Date - alquiler.FechaFinPactada.Date).Days;
+
+            // Obtenemos lo que cuesta 1 día de alquiler normal
+            decimal costoDiario = alquiler.Tarifas.Monto;
+
+            // Regla de Negocio: La multa diaria es el costo de un día + 50% de recargo
+            decimal multaPorDia = costoDiario * 1.5m;
+
+            // Si hay retraso, multiplicamos los días por la multa diaria
+            decimal multaTotal = diasRetraso > 0 ? diasRetraso * multaPorDia : 0.00m;
+
+            // Actualizamos los datos de cierre
+            alquiler.FechaDevolucion = fechaDevolucion;
+            alquiler.TieneDanios = tieneDanios;
+            alquiler.CostoDanios = tieneDanios ? costoDanios : 0.00m;
+            alquiler.MultaRetraso = multaTotal;
+            alquiler.EstadoId = 4; // 4 = Cerrado
+
+            // Liberamos el auto
+            var vehiculo = _db.Vehiculos.Find(alquiler.VehiculoId);
+            if (vehiculo != null) vehiculo.EstadoId = 1; // 1 = Disponible
+
+            // Cobro final (Días reales usados + Multas + Daños)
+            int diasUso = (alquiler.FechaFinPactada.Date - alquiler.FechaInicio.Date).Days;
+            if (diasUso == 0) diasUso = 1; // Mínimo se cobra 1 día
+
+            decimal montoTotal = (costoDiario * diasUso) + multaTotal + alquiler.CostoDanios;
+
+            // Generamos el registro de la deuda del cliente
+            _db.Pagos.Add(new Pagos
+            {
+                AlquilerId = alquiler.AlquilerId,
+                Monto = montoTotal,
+                FechaPago = DateTime.Now,
+                EstadoPago = "Pendiente"
+            });
+
+            _db.SaveChanges();
+        }
+
+        // 3. Obtener el Historial para Auditoría
+        public List<Alquileres> ObtenerHistorialCompleto()
+        {
+            return _db.Alquileres
+                      .Include(a => a.Usuarios)
+                      .Include(a => a.Vehiculos)
+                      .Include(a => a.EstadosAlquiler)
+                      // Excluimos los alquileres que aún están en estado "Reservado" (EstadoId = 1)
+                      // para enfocarnos en los que ya pasaron a proceso o se cerraron.
+                      .Where(a => a.EstadoId != 1)
+                      .OrderByDescending(a => a.AlquilerId)
+                      .ToList();
+        }
+
+        // Obtiene el historial completo de alquileres ya finalizados (EstadoId = 4)
+        public List<Alquileres> ObtenerHistorialCompletado()
+        {
+            return _db.Alquileres
+                      .Include(a => a.Usuarios)
+                      .Include(a => a.Vehiculos)
+                      .Include(a => a.EstadosAlquiler)
+                      .Where(a => a.EstadoId == 4) // 4 = Cerrado
+                      .OrderByDescending(a => a.FechaDevolucion) // Ver los más recientes primero
                       .ToList();
         }
     }

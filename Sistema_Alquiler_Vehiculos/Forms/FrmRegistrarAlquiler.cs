@@ -130,6 +130,7 @@ namespace Sistema_Alquiler_Vehiculos.Forms
         // Evento para recalcular el costo cada vez que cambian las fechas o la tarifa
         private void cmbTarifa_SelectedIndexChanged(object sender, EventArgs e)
         {
+            AjustarFechaSegunTarifa();
             CalcularCosto();
         }
 
@@ -179,11 +180,22 @@ namespace Sistema_Alquiler_Vehiculos.Forms
         // Valida que las fechas sean correctas.
         private bool ValidarFechas()
         {
+            if (cmbTarifa.SelectedItem == null)
+            {
+                MessageBox.Show(
+                    "Selecciona una tarifa antes de continuar.",
+                    "Validacion",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return false;
+            }
+
             if (dtpFechaInicio.Value.Date < DateTime.Today)
             {
                 MessageBox.Show(
-                    "La fecha de inicio no puede ser anterior a hoy.",
-                    "Validacion",
+                    "La fecha de inicio no puede ser anterior a hoy.\n" +
+                    "Por favor selecciona una fecha valida.",
+                    "Fecha invalida",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
                 return false;
@@ -192,16 +204,117 @@ namespace Sistema_Alquiler_Vehiculos.Forms
             if (dtpFechaFin.Value.Date <= dtpFechaInicio.Value.Date)
             {
                 MessageBox.Show(
-                    "La fecha fin debe ser posterior a la fecha de inicio.",
-                    "Validacion",
+                    "La fecha de devolucion debe ser posterior a la fecha de inicio.\n" +
+                    "Por favor selecciona una fecha valida.",
+                    "Fecha invalida",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
                 return false;
             }
 
+            // Valida que las fechas coincidan con la tarifa seleccionada
+            int tarifaId = ((TarifaComboItem)cmbTarifa.SelectedItem).TarifaId;
+            var tarifas = _alquilerFacade.ObtenerTarifasPorVehiculo(_vehiculo.VehiculoId);
+            var tarifa = tarifas.FirstOrDefault(t => t.TarifaId == tarifaId);
+            int diasElegidos = (dtpFechaFin.Value - dtpFechaInicio.Value).Days;
+            string nombre = tarifa.TiposTarifa.NombreTarifa;
+
+            switch (nombre)
+            {
+                case "Semanal":
+                    if (diasElegidos != 7)
+                    {
+                        MessageBox.Show(
+                            $"La tarifa Semanal requiere exactamente 7 dias.\n" +
+                            $"Actualmente tienes {diasElegidos} dias seleccionados.\n\n" +
+                            $"Sugerencia: cambia la tarifa a Diaria si deseas " +
+                            $"alquilar por {diasElegidos} dias.",
+                            "Tarifa incorrecta",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
+                        return false;
+                    }
+                    break;
+                case "FinDeSemana":
+                    if (diasElegidos != 2)
+                    {
+                        MessageBox.Show(
+                            $"La tarifa Fin de Semana requiere exactamente 2 dias.\n" +
+                            $"Actualmente tienes {diasElegidos} dias seleccionados.\n\n" +
+                            $"Sugerencia: cambia la tarifa a Diaria si deseas " +
+                            $"alquilar por {diasElegidos} dias.",
+                            "Tarifa incorrecta",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
+                        return false;
+                    }
+                    break;
+                case "Quince Dias":
+                    if (diasElegidos != 15)
+                    {
+                        MessageBox.Show(
+                            $"La tarifa Quince Dias requiere exactamente 15 dias.\n" +
+                            $"Actualmente tienes {diasElegidos} dias seleccionados.\n\n" +
+                            $"Sugerencia: cambia la tarifa a Diaria si deseas " +
+                            $"alquilar por {diasElegidos} dias.",
+                            "Tarifa incorrecta",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
+                        return false;
+                    }
+                    break;
+                case "Mes":
+                    if (diasElegidos != 30)
+                    {
+                        MessageBox.Show(
+                            $"La tarifa Mes requiere exactamente 30 dias.\n" +
+                            $"Actualmente tienes {diasElegidos} dias seleccionados.\n\n" +
+                            $"Sugerencia: cambia la tarifa a Diaria si deseas " +
+                            $"alquilar por {diasElegidos} dias.",
+                            "Tarifa incorrecta",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
+                        return false;
+                    }
+                    break;
+            }
+
             return true;
         }
-
         
+        // Ajusta la fecha fin automaticamente segun el tipo de tarifa seleccionada.
+        // Esto guia al cliente para que las fechas coincidan con la tarifa.
+        private void AjustarFechaSegunTarifa()
+        {
+            if (cmbTarifa.SelectedItem == null) return;
+
+            int tarifaId = ((TarifaComboItem)cmbTarifa.SelectedItem).TarifaId;
+            var tarifas = _alquilerFacade.ObtenerTarifasPorVehiculo(_vehiculo.VehiculoId);
+            var tarifa = tarifas.FirstOrDefault(t => t.TarifaId == tarifaId);
+
+            if (tarifa == null) return;
+
+            string nombreTarifa = tarifa.TiposTarifa.NombreTarifa;
+
+            switch (nombreTarifa)
+            {
+                case "Diaria":
+                    // Diaria no ajusta, el cliente escoge libremente
+                    break;
+                case "Semanal":
+                    dtpFechaFin.Value = dtpFechaInicio.Value.AddDays(7);
+                    break;
+                case "FinDeSemana":
+                    dtpFechaFin.Value = dtpFechaInicio.Value.AddDays(2);
+                    break;
+                case "Quince Dias":
+                    dtpFechaFin.Value = dtpFechaInicio.Value.AddDays(15);
+                    break;
+                case "Mes":
+                    dtpFechaFin.Value = dtpFechaInicio.Value.AddDays(30);
+                    break;
+            }
+        }
+
     }
 }

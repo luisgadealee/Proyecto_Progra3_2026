@@ -1,0 +1,186 @@
+﻿// ─────────────────────────────────────────────────────────────────────────────
+// Archivo  : FrmVehiculos.cs
+// Capa     : Forms (Presentación)
+// Propósito: Formulario CRUD para que el administrador gestione el inventario 
+//            de la flota de vehículos (Crear, Leer, Actualizar).
+// ─────────────────────────────────────────────────────────────────────────────
+
+using Sistema_Alquiler_Vehiculos.BLL;
+using Sistema_Alquiler_Vehiculos.DAL;
+using System;
+using System.Data;
+using System.Linq;
+using System.Windows.Forms;
+
+namespace Sistema_Alquiler_Vehiculos.Forms
+{
+    public partial class FrmVehiculos : Form
+    {
+        // ─────────────────────────────────────────────────────────────────
+        // Atributos
+        // ─────────────────────────────────────────────────────────────────
+
+        // Facade para comunicarse con la base de datos de vehículos
+        private readonly VehiculoFacade _vehiculoFacade;
+
+        // ─────────────────────────────────────────────────────────────────
+        // Constructor
+        // ─────────────────────────────────────────────────────────────────
+        public FrmVehiculos()
+        {
+            InitializeComponent();
+            _vehiculoFacade = new VehiculoFacade();
+        }
+
+        // ─────────────────────────────────────────────────────────────────
+        // Eventos del formulario
+        // ─────────────────────────────────────────────────────────────────
+        private void FrmVehiculos_Load(object sender, EventArgs e)
+        {
+            CargarListasDesplegables();
+            CargarDGV();
+            LimpiarFormulario(); // Inicializa todo como "Nuevo"
+        }
+
+        // ─────────────────────────────────────────────────────────────────
+        // Eventos de Botones y DGV
+        // ─────────────────────────────────────────────────────────────────
+
+        // Evento para guardar un nuevo vehículo o actualizar uno existente
+        private void btnGuardar_Click(object sender, EventArgs e)
+        {
+            // Validaciones de campos vacíos
+            if (string.IsNullOrWhiteSpace(txtPlaca.Text) || string.IsNullOrWhiteSpace(txtMarca.Text))
+            {
+                MessageBox.Show("Placa y Marca son obligatorios.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Armamos el objeto vehículo con lo que el usuario escribió
+            var vehiculo = new Vehiculos
+            {
+                Placa = txtPlaca.Text.Trim(),
+                Marca = txtMarca.Text.Trim(),
+                Modelo = txtModelo.Text.Trim(),
+                Anio = (int)nudAnio.Value,
+                TipoId = (int)cmbTipo.SelectedValue,   // Se extrae el ID oculto del ComboBox
+                EstadoId = (int)cmbEstado.SelectedValue // Se extrae el ID oculto del ComboBox
+            };
+
+            // Lógica de decisión usando el Label oculto
+            int idActual = int.Parse(lblVehiculoId.Text);
+
+            if (idActual == 0)
+            {
+                // Es un carro NUEVO (Insert)
+                _vehiculoFacade.Crear(vehiculo);
+                MessageBox.Show("Vehículo registrado con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                // Es un carro EXISTENTE (Update)
+                vehiculo.VehiculoId = idActual; // Le reasignamos su ID original
+                _vehiculoFacade.Actualizar(vehiculo);
+                MessageBox.Show("Vehículo actualizado con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+
+            // Refrescamos la pantalla para ver los cambios de inmediato
+            CargarDGV();
+            LimpiarFormulario();
+        }
+
+        // Evento para limpiar el formulario y prepararlo para un nuevo ingreso
+        private void btnLimpiar_Click(object sender, EventArgs e)
+        {
+            LimpiarFormulario();
+        }
+
+        private void dgvVehiculos_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // Evitar errores si hacen clic en los encabezados
+            if (e.RowIndex < 0) return;
+
+            // Obtenemos la fila seleccionada
+            DataGridViewRow fila = dgvVehiculos.Rows[e.RowIndex];
+
+            // 1. Guardamos el ID en el label oculto para saber que estamos EDITANDO
+            lblVehiculoId.Text = fila.Cells["VehiculoId"].Value.ToString();
+
+            // 2. Pasamos los datos a los TextBox
+            txtPlaca.Text = fila.Cells["Placa"].Value.ToString();
+
+            // Separamos la marca y el modelo que unimos en la proyección
+            string[] vehiculo = fila.Cells["Vehiculo"].Value.ToString().Split(' ');
+            txtMarca.Text = vehiculo[0];
+            txtModelo.Text = vehiculo.Length > 1 ? vehiculo[1] : "";
+
+            nudAnio.Value = Convert.ToDecimal(fila.Cells["Anio"].Value);
+
+            // 3. Seleccionamos el texto correcto en los ComboBox
+            cmbTipo.Text = fila.Cells["Tipo"].Value.ToString();
+            cmbEstado.Text = fila.Cells["Estado"].Value.ToString();
+
+            // Cambiamos el texto del botón visualmente
+            btnGuardar.Text = "Actualizar Vehículo";
+        }
+
+        // ─────────────────────────────────────────────────────────────────
+        // Métodos de Carga Inicial
+        // ─────────────────────────────────────────────────────────────────
+
+        // Llena los ComboBox con datos de la base de datos
+        private void CargarListasDesplegables()
+        {
+            // Llenar ComboBox de Tipos (Sedán, SUV, etc.)
+            cmbTipo.DataSource = _vehiculoFacade.ObtenerTipos();
+            cmbTipo.DisplayMember = "NombreTipo"; // Lo que el usuario lee
+            cmbTipo.ValueMember = "TipoId";       // Lo que el sistema guarda
+
+            // Llenar ComboBox de Estados (Disponible, Mantenimiento, etc.)
+            cmbEstado.DataSource = _vehiculoFacade.ObtenerEstados();
+            cmbEstado.DisplayMember = "NombreEstado";
+            cmbEstado.ValueMember = "EstadoId";
+        }
+
+        // Carga la tabla principal con todos los vehículos
+        private void CargarDGV()
+        {
+            var lista = _vehiculoFacade.ObtenerTodos();
+
+            // Proyección para que la tabla se vea limpia y profesional
+            dgvVehiculos.DataSource = lista.Select(v => new
+            {
+                v.VehiculoId,
+                v.Placa,
+                Vehiculo = v.Marca + " " + v.Modelo,
+                v.Anio,
+                Tipo = v.TiposVehiculo.NombreTipo,
+                Estado = v.EstadosVehiculo.NombreEstado
+            }).ToList();
+
+            dgvVehiculos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        }
+
+        // ─────────────────────────────────────────────────────────────────
+        // Metodos Privadas
+        // ─────────────────────────────────────────────────────────────────
+
+        // Restaura el formulario a su estado de "Registro Nuevo"
+        private void LimpiarFormulario()
+        {
+            lblVehiculoId.Text = "0"; // Reinicia el ID oculto
+            txtPlaca.Clear();
+            txtMarca.Clear();
+            txtModelo.Clear();
+            nudAnio.Value = DateTime.Now.Year; // Año actual por defecto
+
+            // Regresa los ComboBox a la primera opción si tienen datos
+            if (cmbTipo.Items.Count > 0) cmbTipo.SelectedIndex = 0;
+            if (cmbEstado.Items.Count > 0) cmbEstado.SelectedIndex = 0;
+
+            btnGuardar.Text = "Guardar Nuevo Vehículo";
+            txtPlaca.Focus(); // Pone el cursor en el primer campo
+        }
+
+    }
+}
