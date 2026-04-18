@@ -1,4 +1,4 @@
-﻿// ─────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 // Archivo  : FrmPrincipalAdministrador.cs
 // Capa     : Forms (Presentación)
 // Propósito: Formulario principal del administrador. Permite gestionar

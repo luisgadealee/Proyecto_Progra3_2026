@@ -12,7 +12,6 @@
 use master;
 go
 
--- la idea es buscar la base de datos si existe, y borrarla para volverla a crear
 if exists (select name from sys.databases where name = 'AlquilerVehiculos')
 begin
     -- forzar cierre de conexiones activas antes de eliminar
@@ -29,7 +28,6 @@ go
 
 -- =====================================================================
 -- PASO 2: Tablas Sub Tablas
--- se crean primero porque las tablas principales necesitan referencias
 -- =====================================================================
 
 -- ---------------------------------------------------------------------
@@ -308,7 +306,7 @@ insert into Tarifas (VehiculoId, TipoTarifaId, Monto) values
     (6, 1,  95.00), (6, 3, 190.00), (6, 5, 2000.00);
 go
 
--- Insertamos con UsuarioAdminId en null para el pendiente, y con valor 1 (Carlos Admin) para los procesados
+
 insert into Alquileres
     (UsuarioId, VehiculoId, TarifaId, EstadoId, UsuarioAdminId, FechaInicio, FechaFinPactada, FechaDevolucion, TieneDanios, CostoDanios, MultaRetraso)
 values

@@ -150,18 +150,6 @@
     <Compile Include="Forms\FrmPrincipalCliente.Designer.cs">
       <DependentUpon>FrmPrincipalCliente.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FrmPrincipalSuperUsuario.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FrmPrincipalSuperUsuario.Designer.cs">
-      <DependentUpon>FrmPrincipalSuperUsuario.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FrmPrincipalVendedor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FrmPrincipalVendedor.Designer.cs">
-      <DependentUpon>FrmPrincipalVendedor.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\FrmRegistrarAlquiler.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -211,12 +199,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmPrincipalCliente.resx">
       <DependentUpon>FrmPrincipalCliente.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FrmPrincipalSuperUsuario.resx">
-      <DependentUpon>FrmPrincipalSuperUsuario.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FrmPrincipalVendedor.resx">
-      <DependentUpon>FrmPrincipalVendedor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmRegistrarAlquiler.resx">
       <DependentUpon>FrmRegistrarAlquiler.cs</DependentUpon>

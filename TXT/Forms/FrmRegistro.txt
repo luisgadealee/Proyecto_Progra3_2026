@@ -1,0 +1,175 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Archivo  : FrmRegistro.cs
+// Capa     : Forms (Presentación)
+// Propósito: Formulario de registro de nuevos clientes.
+//            Permite crear una cuenta para acceder al sistema.
+// ─────────────────────────────────────────────────────────────────────────────
+
+using System;
+using System.Windows.Forms;
+using Sistema_Alquiler_Vehiculos.BLL;
+
+namespace Sistema_Alquiler_Vehiculos.Forms
+{
+    public partial class FrmRegistro : Form
+    {
+
+        // ─────────────────────────────────────────────────────────────────
+        // Atributos
+        // ─────────────────────────────────────────────────────────────────
+
+        // Facade de usuarios. Unico punto de contacto con la base de datos.
+        private readonly UsuarioFacade _usuarioFacade;
+
+        // ─────────────────────────────────────────────────────────────────
+        // Constructor
+        // ─────────────────────────────────────────────────────────────────
+        public FrmRegistro()
+        {
+            InitializeComponent();
+            _usuarioFacade = new UsuarioFacade();
+        }
+
+        // ─────────────────────────────────────────────────────────────────
+        // Eventos del formulario
+        // ─────────────────────────────────────────────────────────────────
+
+        // Configura el formulario al cargar.
+        private void FrmRegistro_Load(object sender, EventArgs e)
+        {
+            txtNombre.Focus();
+        }
+
+        // ─────────────────────────────────────────────────────────────────
+        // Eventos de los botones
+        // ─────────────────────────────────────────────────────────────────
+
+        // Registra el nuevo cliente en la base de datos.
+        private void btnRegistrar_Click(object sender, EventArgs e)
+        {
+            if (!ValidarCampos()) return;
+
+            // Verifica que no exista la cedula
+            if (_usuarioFacade.ExisteCedula(txtCedula.Text.Trim()))
+            {
+                MessageBox.Show(
+                    "Ya existe un usuario con esa cedula.",
+                    "Validacion",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                txtCedula.Focus();
+                return;
+            }
+
+            // Verifica que no exista el email
+            if (_usuarioFacade.ExisteEmail(txtEmail.Text.Trim()))
+            {
+                MessageBox.Show(
+                    "Ya existe un usuario con ese email.",
+                    "Validacion",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                txtEmail.Focus();
+                return;
+            }
+
+            // Verifica que no exista el nombre de usuario
+            if (_usuarioFacade.ExisteNombreUsuario(txtNombreUsuario.Text.Trim()))
+            {
+                MessageBox.Show(
+                    "Ese nombre de usuario ya esta en uso.",
+                    "Validacion",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                txtNombreUsuario.Focus();
+                return;
+            }
+
+            // Registra el cliente
+            _usuarioFacade.RegistrarCliente(
+                txtNombre.Text.Trim(),
+                txtApellido.Text.Trim(),
+                txtCedula.Text.Trim(),
+                txtEmail.Text.Trim(),
+                txtNombreUsuario.Text.Trim(),
+                txtContrasenia.Text.Trim(),
+                txtTelefono1.Text.Trim(),
+                txtTelefono2.Text.Trim()
+            );
+
+            MessageBox.Show(
+                "Usuario registrado correctamente.\nYa puede iniciar sesion.",
+                "Exito",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+
+            this.Close();
+        }
+
+        // Cierra el formulario sin registrar nada.
+        private void btnCancelar_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        // ─────────────────────────────────────────────────────────────────
+        // Métodos privados
+        // ─────────────────────────────────────────────────────────────────
+
+        // Valida que los campos obligatorios tengan contenido valido.
+        // Control de errores basico para evitar enviar datos vacios a la base de datos.
+        private bool ValidarCampos()
+        {
+            if (string.IsNullOrWhiteSpace(txtNombre.Text))
+            {
+                MessageBox.Show("El nombre es obligatorio.", "Validacion",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtNombre.Focus();
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(txtApellido.Text))
+            {
+                MessageBox.Show("El apellido es obligatorio.", "Validacion",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtApellido.Focus();
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(txtCedula.Text))
+            {
+                MessageBox.Show("La cedula es obligatoria.", "Validacion",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtCedula.Focus();
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(txtEmail.Text))
+            {
+                MessageBox.Show("El email es obligatorio.", "Validacion",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtEmail.Focus();
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(txtNombreUsuario.Text))
+            {
+                MessageBox.Show("El nombre de usuario es obligatorio.", "Validacion",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtNombreUsuario.Focus();
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(txtContrasenia.Text))
+            {
+                MessageBox.Show("La contrasenia es obligatoria.", "Validacion",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtContrasenia.Focus();
+                return false;
+            }
+            if (txtContrasenia.Text != txtConfirmar.Text)
+            {
+                MessageBox.Show("Las contrasenias no coinciden.", "Validacion",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtConfirmar.Focus();
+                return false;
+            }
+            return true;
+        }
+    }
+}

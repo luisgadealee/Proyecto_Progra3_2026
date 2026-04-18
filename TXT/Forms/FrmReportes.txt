@@ -1,4 +1,4 @@
-﻿// ─────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 // Archivo  : FrmReportes.cs
 // Capa     : Forms (Presentación)
 // Propósito: Dashboard financiero que muestra el rendimiento económico 

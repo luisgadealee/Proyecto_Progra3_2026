@@ -1,0 +1,57 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Archivo  : PagoFacade.cs
+// Capa     : BLL (Business Logic Layer)
+// Propósito: Intermediario entre los formularios y la base de datos
+//            para todo lo relacionado con pagos.
+// Patrón   : Facade
+// ─────────────────────────────────────────────────────────────────────────────
+
+using System.Collections.Generic;
+using System.Linq;
+using Sistema_Alquiler_Vehiculos.DAL;
+
+namespace Sistema_Alquiler_Vehiculos.BLL
+{
+
+    public class PagoFacade
+    {
+        // ─────────────────────────────────────────────────────────────────
+        // Atributos
+        // ─────────────────────────────────────────────────────────────────
+
+        // Conxion a la base de datos a través de Entity Framework.
+        private readonly AlquilerVehiculosEntities _db;
+
+        // ─────────────────────────────────────────────────────────────────
+        // Constructor
+        // ─────────────────────────────────────────────────────────────────
+
+        // Constructor que inicializa el contexto de Entity Framework.
+        public PagoFacade()
+        {
+            _db = new AlquilerVehiculosEntities();
+        }
+
+        // ─────────────────────────────────────────────────────────────────
+        // Métodos públicos
+        // ─────────────────────────────────────────────────────────────────
+
+        // Obtiene todos los pagos de un cliente específico.
+        public List<Pagos> ObtenerPorCliente(int usuarioId)
+        {
+            return _db.Pagos
+                      .Where(p => p.Alquileres.UsuarioId == usuarioId)
+                      .ToList();
+        }
+
+        // Obtiene los pagos pendientes de un cliente.
+        // Un pago se considera pendiente si su EstadoPago es "Pendiente".
+        public List<Pagos> ObtenerPendientesPorCliente(int usuarioId)
+        {
+            return _db.Pagos
+                      .Where(p => p.Alquileres.UsuarioId == usuarioId
+                               && p.EstadoPago == "Pendiente")
+                      .ToList();
+        }
+    }
+}

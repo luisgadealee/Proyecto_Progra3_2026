@@ -1,4 +1,4 @@
-﻿// ─────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 // Archivo  : VehiculoFacade.cs
 // Capa     : BLL (Business Logic Layer)
 // Propósito: Intermediario entre los formularios y la base de datos

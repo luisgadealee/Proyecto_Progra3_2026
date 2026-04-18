@@ -1,4 +1,4 @@
-﻿// ─────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 // Archivo  : FrmEmpleados.cs
 // Capa     : Forms (Presentación)
 // Propósito: Gestión de personal (Vendedores, Administradores y Super Usuarios).

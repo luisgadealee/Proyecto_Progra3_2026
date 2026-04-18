@@ -1,4 +1,4 @@
-﻿// ─────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 // Archivo  : FrmInicioSesion.cs
 // Capa     : Forms (Presentación)
 // Propósito: Formulario de inicio de sesión del sistema.
